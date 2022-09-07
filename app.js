@@ -14,7 +14,7 @@ const Campground = require('./models/campground'); // require "Campground" model
 // ====================
 // MONGOOSE CONNECTION TO MONGO
 // ====================
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {/* deprecated useless stuff */}); // open Mongoose's default connection to MongoDB. "yelp-camp" is the database.
+mongoose.connect('mongodb://localhost:27017/yelp-camp'); // open Mongoose's default connection to MongoDB. "yelp-camp" is the database.
 
 
 const db = mongoose.connection; // assign "db" variable to Mongoose module's default connection. Variable assigned to make things shorter.

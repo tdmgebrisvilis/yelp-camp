@@ -10,4 +10,4 @@ const CampgroundSchema = new Schema({ // create new "CampgroundSchema" Schema.
     location: String
 })
 
-module.exports = mongoose.model('Campground', CampgroundSchema); // export "Campground" model that uses "CampgroundSchema" schema.
+module.exports = mongoose.model('Campground', CampgroundSchema); // export "Campground" model that uses "CampgroundSchema" schema. ("campgrounds" collection).
