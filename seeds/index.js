@@ -16,18 +16,18 @@ const sample = array => array[Math.floor(Math.random() * array.length)]; // "sam
 // random available element will be selected (index is any random number from 0 to array.length-1).
 
 
-const seedDB = async () => {
-    await Campground.deleteMany({});
-    for (let i = 0; i < 50; i++) {
-        const random1000 = Math.floor(Math.random() * 1000);
-        const camp = new Campground({
-            location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            title: `${sample(descriptors)} ${sample(places)}`
+const seedDB = async () => { // create "seedDB" async function.
+    await Campground.deleteMany({}); // delete all previous documents from "campgrounds" collection (in "yelp-camp" db). 
+    for (let i = 0; i < 50; i++) { // repeat the following for 50 times.
+        const random1000 = Math.floor(Math.random() * 1000); // create variable "random1000" that is any random whole number from 0 to 999.
+        const camp = new Campground({ // create new document (camp) based on the "Campground" model.
+            location: `${cities[random1000].city}, ${cities[random1000].state}`, // location: "cities" array index of random nr from 0 to 999 .city + "cities" array index of random nr from 0 to 999 .state.
+            title: `${sample(descriptors)} ${sample(places)}` // title: "random element from "descriptors" array + random element from "places" array".
         })
-        await camp.save();
+        await camp.save(); // save the document.
     }
 }
 
-seedDB().then(() => {
+seedDB().then(() => { // run "seedDB" function, then close the connection.
     mongoose.connection.close();
 })
