@@ -28,7 +28,7 @@ db.once('open', () => { // run when connected.
 // MIDDLEWARE
 // ====================
 app.set('view engine', 'ejs'); // set "view engine" as "ejs" (express, for ejs files).
-app.set('views', path.join(__dirname, 'views')); // set "views" directory to be available from anywhere (express).
+app.set('views', path.join(__dirname, 'views')); // set "views" directory (for rendering) to be available from anywhere (express).
 
 
 // ====================
@@ -38,11 +38,14 @@ app.get('/', (req, res) => { // get request (express).
     res.render('home');
 });
 
-app.get('/makecampground', async (req, res) => { 
-    const camp = new Campground({title: 'My Backyard', description: 'cheap camping!'});
-    await camp.save();
-    res.send(camp)
-});
+app.get('/campgrounds', async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds })
+})
+
+app.get('/campgrounds/:id', async (req, res) => {
+    res.render()
+})
 
 
 // ====================
