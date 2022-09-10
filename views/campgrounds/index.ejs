@@ -10,7 +10,7 @@
     <h1>All Campgounds</h1>
     <ul>
         <% for (let campground of campgrounds) { %> 
-            <li><%= campground.title %></li>
+            <a href="/campgrounds/<%= campground._id %>"><li><%= campground.title %></li></a>
         <% } %> 
     </ul>
 </body>
