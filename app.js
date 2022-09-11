@@ -6,16 +6,17 @@ const app = express(); // asign variable "app" to express().
 const path = require('path'); // require path (node).
 const mongoose = require('mongoose') // require mongoose.
 
+
 // ====================
 // MODELS
 // ====================
 const Campground = require('./models/campground'); // require "Campground" model from ./models/campground.js.
 
+
 // ====================
 // MONGOOSE CONNECTION TO MONGO
 // ====================
 mongoose.connect('mongodb://localhost:27017/yelp-camp'); // open Mongoose's default connection to MongoDB. "yelp-camp" is the database.
-
 
 const db = mongoose.connection; // assign "db" variable to Mongoose module's default connection. Variable assigned to make things shorter.
 db.on('error', console.error.bind(console, 'connection error:')); // run if error occurs.
@@ -29,6 +30,22 @@ db.once('open', () => { // run when connected.
 // ====================
 app.set('view engine', 'ejs'); // set "view engine" as "ejs" (express, for ejs files).
 app.set('views', path.join(__dirname, 'views')); // set "views" directory (for rendering) to be available from anywhere (express).
+app.use(express.urlencoded({ extended: true })) // parse bodies from urls when there is POST request and where Content-Type header matches type option. (express).
+
+
+// ====================
+// CRUD: CREATE
+// ====================
+app.get('/campgrounds/new', (req, res) => { // get request, page with form for new campground creation. This would've conflicted with "/campgrounds/:id" if it went after.
+    res.render('campgrounds/new'); // render this file.
+})
+
+app.post('/campgrounds', async (req, res) => { // post request
+    const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" model, properties will be taken 
+// from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
+    await campground.save(); // save the newly created document.
+    res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
+})
 
 
 // ====================
@@ -38,14 +55,14 @@ app.get('/', (req, res) => { // get request (express).
     res.render('home');
 });
 
-app.get('/campgrounds', async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds })
+app.get('/campgrounds', async (req, res) => { // get request, page for all campgrounds.
+    const campgrounds = await Campground.find({}); // variable for all documents from "Campground" model.
+    res.render('campgrounds/index', { campgrounds }) // render this file, transfer variable "campgrounds" to it.
 })
 
-app.get('/campgrounds/:id', async (req, res) => {
-    const campground = await Campground.findById(req.params.id)
-    res.render('campgrounds/show', { campground })
+app.get('/campgrounds/:id', async (req, res) => { // get request, page for individual camps.
+    const campground = await Campground.findById(req.params.id) // variable for individual campground (id taken from req.params).
+    res.render('campgrounds/show', { campground }) // render this file, transfer variable "campgrounds" to it.
 })
 
 
