@@ -5,6 +5,7 @@ const express = require('express'); // require express. (npm).
 const app = express(); // asign variable "app" to express().
 const path = require('path'); // require path (node).
 const mongoose = require('mongoose') // require mongoose. (npm).
+const ejsMate = require('ejs-mate'); // require ejs-mate (npm).
 const methodOverride = require('method-override'); // require method-override. (npm). (For put delete etc).
 
 // ====================
@@ -26,6 +27,7 @@ db.once('open', () => { // run when connected.
 // ====================
 // MIDDLEWARE
 // ====================
+app.engine('ejs', ejsMate); // use this engine (ejsMate (ejs-mate)) for "ejs" instead of the default one.  
 app.set('view engine', 'ejs'); // set "view engine" as "ejs" (express, for ejs files).
 app.set('views', path.join(__dirname, 'views')); // set "views" directory (for rendering) to be available from anywhere (express).
 app.use(express.urlencoded({ extended: true })) // parse bodies from urls when there is POST request and where Content-Type header matches type option. (express).
