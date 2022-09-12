@@ -28,6 +28,7 @@ db.once('open', () => { // run when connected.
 // ====================
 app.set('view engine', 'ejs'); // set "view engine" as "ejs" (express, for ejs files).
 app.set('views', path.join(__dirname, 'views')); // set "views" directory (for rendering) to be available from anywhere (express).
+// app.use() - run function (middleware) that is in parens on every (and any) request. 
 app.use(express.urlencoded({ extended: true })) // parse bodies from urls when there is POST request and where Content-Type header matches type option. (express).
 app.use(methodOverride('_method')); // for method-override (put delete etc).
 
