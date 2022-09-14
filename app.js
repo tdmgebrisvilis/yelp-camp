@@ -7,6 +7,7 @@ const path = require('path'); // require path (node).
 const mongoose = require('mongoose') // require mongoose. (npm).
 const ejsMate = require('ejs-mate'); // require ejs-mate (npm).
 const methodOverride = require('method-override'); // require method-override. (npm). (For put delete etc).
+const axios = require('axios'); // require axios (npm). (for now this is needed just for seeds).
 
 // ====================
 // MODELS
