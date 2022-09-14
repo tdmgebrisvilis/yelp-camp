@@ -5,7 +5,8 @@ const Schema = mongoose.Schema; // asign variable to mongoose schema (this is a 
 
 const CampgroundSchema = new Schema({ // create new "CampgroundSchema" Schema.
     title: String,
-    price: String,
+    image: String,
+    price: Number,
     description: String,
     location: String
 })

@@ -18,11 +18,15 @@ const sample = array => array[Math.floor(Math.random() * array.length)]; // "sam
 
 const seedDB = async () => { // create "seedDB" async function.
     await Campground.deleteMany({}); // delete all previous documents from "campgrounds" collection (in "yelp-camp" db). 
-    for (let i = 0; i < 50; i++) { // repeat the following for 50 times.
+    for (let i = 0; i < 3; i++) { // repeat the following for 50 times.
         const random1000 = Math.floor(Math.random() * 1000); // create variable "random1000" that is any random whole number from 0 to 999.
+        const price = Math.floor(Math.random() * 20) + 10;
         const camp = new Campground({ // create new document (camp) based on the "Campground" model.
             location: `${cities[random1000].city}, ${cities[random1000].state}`, // location: "cities" array index of random nr from 0 to 999 .city + "cities" array index of random nr from 0 to 999 .state.
-            title: `${sample(descriptors)} ${sample(places)}` // title: "random element from "descriptors" array + random element from "places" array".
+            title: `${sample(descriptors)} ${sample(places)}`, // title: "random element from "descriptors" array + random element from "places" array".
+            image: 'https://unsplash.com/collections/483251',
+            description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium ipsum, ea illum earum repellendus commodi tempora ratione, quasi ad pariatur tenetur iste nobis dicta deserunt placeat. Voluptate necessitatibus dolorum sunt?',
+            price // ***NEW*** i can do it just like this, with no value, only key (if there is a variable of the same name).
         })
         await camp.save(); // save the document.
     }
