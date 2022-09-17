@@ -4,8 +4,9 @@
 const express = require('express'); // require express. (npm).
 const app = express(); // asign variable "app" to express().
 const path = require('path'); // require path (node).
-const mongoose = require('mongoose') // require mongoose. (npm).
+const mongoose = require('mongoose'); // require mongoose. (npm).
 const ejsMate = require('ejs-mate'); // require ejs-mate (npm).
+const catchAsync = require('./utils/catchAsync'); // require async error catch function (that I created).
 const methodOverride = require('method-override'); // require method-override. (npm). (For put delete etc).
 const axios = require('axios'); // require axios (npm). (for now this is needed just for seeds).
 
@@ -41,16 +42,11 @@ app.get('/campgrounds/new', (req, res) => { // get request, page with form for n
     res.render('campgrounds/new'); // render this file.
 })
 
-app.post('/campgrounds', async (req, res, next) => { // post request. next is here for error handling
-    try{ // try
+app.post('/campgrounds', catchAsync(async (req, res, next) => { // post request. next is here for error handling
         const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" model, properties will be taken from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
         await campground.save(); // save the newly created document.
         res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
-    }
-    catch(e){ // catch (error)
-        next(e) // if there is an error, run the next error handling middleware.
-    }
-})
+}))
 
 // ====================
 // CRUD: READ
@@ -59,39 +55,39 @@ app.get('/', (req, res) => { // get request (express).
     res.render('home');
 });
 
-app.get('/campgrounds', async (req, res) => { // get request, page for all campgrounds.
+app.get('/campgrounds', catchAsync(async (req, res) => { // get request, page for all campgrounds.
     const campgrounds = await Campground.find({}); // variable for all documents from "Campground" model.
     res.render('campgrounds/index', { campgrounds }) // render this file, transfer variable "campgrounds" to it.
-})
+}))
 
-app.get('/campgrounds/:id', async (req, res) => { // get request, page for individual camps.
+app.get('/campgrounds/:id', catchAsync(async (req, res) => { // get request, page for individual camps.
     const campground = await Campground.findById(req.params.id) // variable for individual campground (id taken from req.params).
     res.render('campgrounds/show', { campground }) // render this file, transfer variable "campgrounds" to it.
-})
+}))
 
 // ====================
 // CRUD: EDIT
 // ====================
-app.get('/campgrounds/:id/edit', async (req, res) => { // get request, page with form for editing individual camps.
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => { // get request, page with form for editing individual camps.
     const campground = await Campground.findById(req.params.id) // variable for individual campground (id taken from req.params).
     res.render('campgrounds/edit', { campground }) // render this file, transfer variable "campgrounds" to it.
-})
+}))
 
-app.put('/campgrounds/:id', async (req, res) => { // put request (edit campground).
+app.put('/campgrounds/:id', catchAsync(async (req, res) => { // put request (edit campground).
     const { id } = req.params; // destructure id from req.params (url).
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }); // update the document, ...SPREAD new updated data to object from req.body.campground.
     res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
-})
+}))
 
 // ====================
 // CRUD: DELETE
 // ====================
-app.delete('/campgrounds/:id', async (req, res) => { // delete request.
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => { // delete request.
     const { id } = req.params; // destructure id from req.params (url).
     await Campground.findByIdAndDelete(id); //  // find by id (from the url) and delete.
     // console.log(deletedCampground); // show deleted document.
     res.redirect('/campgrounds'); // redirect to this page.
-})
+}))
 
 // ====================
 // ERROR HANDLING MIDDLEWARE
