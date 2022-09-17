@@ -6,6 +6,7 @@ const app = express(); // asign variable "app" to express().
 const path = require('path'); // require path (node).
 const mongoose = require('mongoose'); // require mongoose. (npm).
 const ejsMate = require('ejs-mate'); // require ejs-mate (npm).
+const Joi = require('joi'); // require joi (npm). 
 const catchAsync = require('./utils/catchAsync'); // require "catchAsync" async error catcher function (that I created).
 const ExpressError = require('./utils/ExpressError'); // require "ExpressError" error handling class (that I created).
 const methodOverride = require('method-override'); // require method-override. (npm). (For put delete etc).
@@ -43,9 +44,29 @@ app.get('/campgrounds/new', (req, res) => { // get request, page with form for n
     res.render('campgrounds/new'); // render this file.
 })
 
-app.post('/campgrounds', catchAsync(async (req, res, next) => { // post request. next is here for error handling
-        if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400); // if there is an error in form submission (req.body.campground), throw new "ExpressError" based error, which will be caught by "catchAsync" and sent to "next" error handling middleware.
-        const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" model, properties will be taken from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
+app.post('/campgrounds', catchAsync(async (req, res, next) => { // post request. next is here for error handling.
+        // if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400); // if there is an error in form submission (req.body.campground), throw new "ExpressError" based error, which will be caught by "catchAsync" and sent to "next" error handling middleware.
+        // ====================
+        // ERROR HANDLING ON THE SERVER SIDE:
+        // ====================
+        const campgroundSchema = Joi.object({ // this is NOT mongoose schema!! this is a schema for "joi" validation.
+            campground: Joi.object({ // "campground" (the object that will be in req.body).
+                title: Joi.string().required(), // title must be a string and is required.
+                price: Joi.number().required().min(0), // price must be a number, is required, minimum set to 0
+                image: Joi.string().required(),
+                location: Joi.string().required(),
+            }).required() // is required
+        }) 
+        const { error } = campgroundSchema.validate(req.body); // validate req.body using "campgroundSchema", destructure "error" from it.
+        if(error){ // if there is an error:
+            const msg = error.details.map((el) => el.message).join(',') // map "message" parameter from each element (el) of "error.details" array, return it as a string (join()).
+            console.log(error.details); // log error.detais array on console.
+            console.log(msg); // log "msg" on console. 
+            throw new ExpressError(msg, 400) // throw this error (and pass it on to the next error handler). "result.error.details" is the message, "400" is the status code.
+        }
+        // ====================
+        // ====================
+        const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" mongoose model, properties will be taken from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
         await campground.save(); // save the newly created document.
         res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
 }))
@@ -95,7 +116,7 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => { // delete reques
 // ERROR HANDLING MIDDLEWARE
 // ====================
 app.all('*', (req, res, next) => { // on every single request, for every path, if nothing else that was supposed to match did not do so,
-    next(new ExpressError('Page Not Found', 404)); // run "next" error handling middleware based on the "ExpressError" error handling class.
+    next(new ExpressError('Page Not Found', 404)); // run "next" error handling middleware based on the "ExpressError" error handling class; + show "Page Not Found" & 404 status if that's the case.
 }) 
 
 app.use((err, req, res, next) => { // express error handling middleware example, 4 params required 
