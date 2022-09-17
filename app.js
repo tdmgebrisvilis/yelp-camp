@@ -41,11 +41,15 @@ app.get('/campgrounds/new', (req, res) => { // get request, page with form for n
     res.render('campgrounds/new'); // render this file.
 })
 
-app.post('/campgrounds', async (req, res) => { // post request
-    const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" model, properties will be taken 
-// from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
-    await campground.save(); // save the newly created document.
-    res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
+app.post('/campgrounds', async (req, res, next) => { // post request. next is here for error handling
+    try{ // try
+        const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" model, properties will be taken from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
+        await campground.save(); // save the newly created document.
+        res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
+    }
+    catch(e){ // catch (error)
+        next(e) // if there is an error, run the next error handling middleware.
+    }
 })
 
 // ====================
@@ -87,6 +91,13 @@ app.delete('/campgrounds/:id', async (req, res) => { // delete request.
     await Campground.findByIdAndDelete(id); //  // find by id (from the url) and delete.
     // console.log(deletedCampground); // show deleted document.
     res.redirect('/campgrounds'); // redirect to this page.
+})
+
+// ====================
+// ERROR HANDLING MIDDLEWARE
+// ====================
+app.use((err, req, res, next) => { // express error handling middleware example, 4 params required 
+    res.send('Oh boy, something went wrong!'); // send this message
 })
 
 // ====================
