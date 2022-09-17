@@ -36,6 +36,24 @@ app.set('view engine', 'ejs'); // set "view engine" as "ejs" (express, for ejs f
 app.set('views', path.join(__dirname, 'views')); // set "views" directory (for rendering) to be available from anywhere (express).
 app.use(express.urlencoded({ extended: true })); // parse bodies from urls when there is POST request and where Content-Type header matches type option. (express).
 app.use(methodOverride('_method')); // for method-override (put delete etc).
+// ====================
+// ERROR HANDLING ON THE SERVER SIDE:
+// ====================
+const validateCampground = (req, res, next) => {
+    const campgroundSchema = Joi.object({ // this is NOT mongoose schema!! this is a schema for "joi" validation.
+        campground: Joi.object({ // "campground" (the object that will be in req.body).
+            title: Joi.string().required(), // title must be a string and is required.
+            price: Joi.number().required().min(0), // price must be a number, is required, minimum set to 0
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+        }).required() // is required
+    }) 
+    const { error } = campgroundSchema.validate(req.body); // validate req.body using "campgroundSchema", destructure "error" from it.
+    if(error){ // if there is an error:
+        const msg = error.details.map((el) => el.message).join(',') // map "message" parameter from each element (el) of "error.details" array, return it as a string (join()).
+        throw new ExpressError(msg, 400) // throw this error (and pass it on to the next error handler). "result.error.details" is the message, "400" is the status code.
+    }
+}
 
 // ====================
 // CRUD: CREATE
@@ -45,27 +63,6 @@ app.get('/campgrounds/new', (req, res) => { // get request, page with form for n
 })
 
 app.post('/campgrounds', catchAsync(async (req, res, next) => { // post request. next is here for error handling.
-        // if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400); // if there is an error in form submission (req.body.campground), throw new "ExpressError" based error, which will be caught by "catchAsync" and sent to "next" error handling middleware.
-        // ====================
-        // ERROR HANDLING ON THE SERVER SIDE:
-        // ====================
-        const campgroundSchema = Joi.object({ // this is NOT mongoose schema!! this is a schema for "joi" validation.
-            campground: Joi.object({ // "campground" (the object that will be in req.body).
-                title: Joi.string().required(), // title must be a string and is required.
-                price: Joi.number().required().min(0), // price must be a number, is required, minimum set to 0
-                image: Joi.string().required(),
-                location: Joi.string().required(),
-            }).required() // is required
-        }) 
-        const { error } = campgroundSchema.validate(req.body); // validate req.body using "campgroundSchema", destructure "error" from it.
-        if(error){ // if there is an error:
-            const msg = error.details.map((el) => el.message).join(',') // map "message" parameter from each element (el) of "error.details" array, return it as a string (join()).
-            console.log(error.details); // log error.detais array on console.
-            console.log(msg); // log "msg" on console. 
-            throw new ExpressError(msg, 400) // throw this error (and pass it on to the next error handler). "result.error.details" is the message, "400" is the status code.
-        }
-        // ====================
-        // ====================
         const campground = new Campground(req.body.campground); // "campground" = new document based on "Campground" mongoose model, properties will be taken from req.body.campground (.campground is here because the names of inputs are under "campground[someName]" in the "new.ejs" file).  
         await campground.save(); // save the newly created document.
         res.redirect(`/campgrounds/${campground._id}`); // redirect to this page.
