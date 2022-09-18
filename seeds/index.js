@@ -40,8 +40,9 @@ async function seedImgs() { // function to seed images using "unsplash" API.
 // ====================
 // sample function
 // ====================
-const sample = array => array[Math.floor(Math.random() * array.length)]; // "sample" is a function. This function's argument will be an array. From that array a 
-// random available element will be selected (index is any random number from 0 to array.length-1).
+const sample = array => array[Math.floor(Math.random() * array.length)]; // ↓
+// "sample" is a function. This function's argument will be an array. From that array a random available element will be selected (index is any random 
+// number from 0 to array.length-1).
 
 // ====================
 // seedDB function
@@ -53,7 +54,8 @@ const seedDB = async () => { // create "seedDB" async function.
         const random1000 = Math.floor(Math.random() * 1000); // create variable "random1000" that is any random whole number from 0 to 999.
         const price = Math.floor(Math.random() * 20) + 10; // asingn variable for random price. 
         const camp = new Campground({ // create new document (camp) based on the "Campground" model.
-            location: `${cities[random1000].city}, ${cities[random1000].state}`, // location: "cities" array index of random nr from 0 to 999 .city + "cities" array index of random nr from 0 to 999 .state.
+            location: `${cities[random1000].city}, ${cities[random1000].state}`, // ↓
+            // location: "cities" array index of random nr from 0 to 999 .city + "cities" array index of random nr from 0 to 999 .state.
             title: `${sample(descriptors)} ${sample(places)}`, // title: "random element from "descriptors" array + random element from "places" array".
             image: sample(imgs), // iterate over "imgs" and randomly select one.
             description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium ipsum, ea illum earum repellendus commodi tempora ratione, quasi ad pariatur tenetur iste nobis dicta deserunt placeat. Voluptate necessitatibus dolorum sunt?',

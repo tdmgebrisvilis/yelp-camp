@@ -1,9 +1,13 @@
 // campground model
+/**
+ * This is the mongoose "Campground" model.
+ * First create the schema ("CampgroundSchema").
+ * Then export the "Campground" model that uses "CampgroundSchema" schema.
+ */
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 
-const mongoose = require('mongoose') // require mongoose.
-const Schema = mongoose.Schema; // asign variable to mongoose schema (this is a shortcut, "mongoose.Schema" is now available as Schema).
-
-const CampgroundSchema = new Schema({ // create new "CampgroundSchema" Schema.
+const CampgroundSchema = new Schema({
     title: String,
     image: String,
     price: Number,
@@ -11,4 +15,4 @@ const CampgroundSchema = new Schema({ // create new "CampgroundSchema" Schema.
     location: String
 })
 
-module.exports = mongoose.model('Campground', CampgroundSchema); // export "Campground" model that uses "CampgroundSchema" schema. ("campgrounds" collection).
+module.exports = mongoose.model('Campground', CampgroundSchema);

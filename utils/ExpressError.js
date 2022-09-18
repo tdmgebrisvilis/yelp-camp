@@ -1,12 +1,18 @@
 // ====================
 // MY CUSTOM ERROR HANDLING CLASS
 // ====================
-class ExpressError extends Error { // create class "ExpressError" that extends regular built-in "Error"
-    constructor(message, statusCode) { // construct 2 properties in "ExpressError"
-        super(); // super from "Error"
-        this.message = message; // what ever is passed in to this class as message will be message
-        this.statusCode = statusCode; // same as above
+/**
+ * "ExpressError" is an error handling class that extends regular built-in "Error" error handling class.
+ * "ExpressError" will have message & statusCode as properties.
+ * super() is here to access the "Error's" properties and methods.
+ * Finally, export this class. 
+ */
+class ExpressError extends Error {
+    constructor(message, statusCode) {
+        super();
+        this.message = message;
+        this.statusCode = statusCode;
     }
 }
 
-module.exports = ExpressError; // export class "ExpressError"
+module.exports = ExpressError;
