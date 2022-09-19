@@ -1,6 +1,6 @@
-// campground model
 /**
  * This is the mongoose "Campground" model.
+ * Before creating the model mongoose must be required; the "mongoose.Schema" shortening to just "Schema" is optional.
  * First create the schema ("CampgroundSchema").
  * Then export the "Campground" model that uses "CampgroundSchema" schema.
  */
