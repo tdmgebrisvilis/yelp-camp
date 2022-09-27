@@ -1,11 +1,15 @@
-<% layout('layouts/boilerplate') %> <%# ejs-mate %> 
+<!-- ejs-mate: -->
+<% layout('layouts/boilerplate') %> 
 <div class="row">
     <h1 class="text-center">New Campground</h1>
-    <div class="col-6 offset-3<%# offset-3 in this case will center the column %>">
-        <form action="/campgrounds" method="POST" class="validated-form" novalidate <%#--- for bootstrap validation %>>
+    <!-- offset-3 in this case will center the column:  -->
+    <div class="col-6 offset-3">
+        <!-- "validated-form" & "novalidate" are here for for bootstrap validation:  -->
+        <form action="/campgrounds" method="POST" class="validated-form" novalidate>
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
-                <input class="form-control" type="text" id="title" name="campground[title]" required <%#--- validation %> >
+                <!-- "required" is for validation from client side:  -->
+                <input class="form-control" type="text" id="title" name="campground[title]" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
