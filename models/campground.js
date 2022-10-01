@@ -1,8 +1,11 @@
 /**
  * This is the mongoose "Campground" model.
- * Before creating the model mongoose must be required; the "mongoose.Schema" shortening to just "Schema" is optional.
- * First create the schema ("CampgroundSchema").
- * Then export the "Campground" model that uses "CampgroundSchema" schema.
+ * Before creating the model mongoose must be required.
+ * The "mongoose.Schema" shortening to just "Schema" is optional.
+ * Create the "CampgroundSchema".
+ * "reviews" is an array of documents (their IDs) from the "Review" model.
+ * Finally export the "Campground" model that uses "CampgroundSchema" schema.
+ * 
  */
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
@@ -12,7 +15,13 @@ const CampgroundSchema = new Schema({
     image: String,
     price: Number,
     description: String,
-    location: String
+    location: String,
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Review'
+        }
+    ]
 })
 
 module.exports = mongoose.model('Campground', CampgroundSchema);
