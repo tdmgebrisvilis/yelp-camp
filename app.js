@@ -3,10 +3,12 @@
 // ====================
 
 /**
- * Packages from npm: "express", "mongoose", "ejs-mate", "method-override".
- * Modules from node: "path".
- * Modules created by me: "catchAsync", "ExpressError".
- * NOTE** Not all packages required to run this app were required in this file. E.g. "joi" was required in the "./schemas.js".
+ * These packages are required to run this app.
+ * Notes:
+    * Packages from npm: "express", "mongoose", "ejs-mate", "method-override".
+    * Modules from node: "path".
+    * Modules created by me: "catchAsync", "ExpressError".
+    * Not all packages that are required to run this app were required in this file. E.g. "joi" was required in the "./schemas.js".
  */
 const express = require('express');
 const app = express();
@@ -21,6 +23,9 @@ const methodOverride = require('method-override');
 // SCHEMAS:
 // ====================
 
+/**
+ * This is a schema for "joi" validation.
+ */
 const { campgroundSchema } = require('./schemas');
 
 // ====================
@@ -28,14 +33,15 @@ const { campgroundSchema } = require('./schemas');
 // ====================
 
 const Campground = require('./models/campground');
+const Review = require('./models/review');
 
 // ====================
 // MONGOOSE CONNECTION TO MONGO
 // ====================
 
 /**
- * Open Mongoose's default connection to MongoDB. "yelp-camp" is the database. 
- * If there isn't one yet, it'll be created.
+ * Open Mongoose's default connection to MongoDB. 
+ * "yelp-camp" is the database. If it doesn't exist yet, it'll be created.
  */
 mongoose.connect('mongodb://localhost:27017/yelp-camp'); 
 const db = mongoose.connection; 
@@ -71,12 +77,13 @@ app.use(methodOverride('_method'));
  * The function "validateCampground" is for validating req.body when posting/putting campgrounds.
  * If there is an error,send it to the next error handling middleware (with message and error code).
  * If there are no errors, call the next function in the stack (i.e. the request).
+ * Notes: 
+    * req.body is validated with using the "campgroundSchema" "Joi" validation, and "error" is destructured from it.
+    * "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string ( join() ).
  */
 const validateCampground = (req, res, next) => {
-    // Validate with req.body using the "campgroundSchema", and destructure "error" from it.
     const { error } = campgroundSchema.validate(req.body);
     if(error){
-        // Map "message" parameter from each element (el) of "error.details" array, and return it as a string ( join() ).
         const msg = error.details.map((el) => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else {
@@ -114,13 +121,17 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-// Get request, to show all campgrounds.
+/**
+ * Get request, to show all campgrounds.
+ */
 app.get('/campgrounds', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds });
 }))
 
-// Get request, to show individual campgrounds.
+/**
+ * Get request, to show individual campgrounds.
+ */
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/show', { campground });
@@ -141,7 +152,6 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
  * Put request, to edit individual campgrounds. With "validateCampground" for validation and "catchAsync" for catching errors.
  * Campground is found by using "id" from req.params, then updated by ...SPREADING new updated data from req.body.campground (the 
  * data from the submitted form) into the found object.
- * 
  */
 app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -153,11 +163,30 @@ app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
 // CRUD: DELETE
 // ====================
 
-// Delete request, to delete individual campgrounds.
+/**
+ * Delete request, to delete individual campgrounds.
+ */
 app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+}))
+
+// ====================
+// POST REQUEST FOR "REVIEWS"
+// ====================
+
+/**
+ * This is a post request to create a new review for an individual camp.
+ * The form itself for creating the review is in the views/campgrounds/show.ejs.
+ */
+app.post('/campgrounds/:id/reviews', catchAsync(async(req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 }))
 
 // ====================
@@ -188,7 +217,9 @@ app.use((err, req, res, next) => {
 // CONNECTION TO THE SERVER
 // ====================
 
-// Set up the server (express).
+/**
+ * Set up the server (express).
+ */
 app.listen(3000, () => {
     console.log('SERVING ON PORT 3000');
 });

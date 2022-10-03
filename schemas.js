@@ -1,6 +1,6 @@
 /**
  * Below is a schema for "joi" validation. Any object that will be validated with using this schema will have to
- * have { campground = { title: xxx, price: xxx, ...etc... } } with all requirenments met (type, min value, required, ...etc...).
+ * have { campground { title: xxx, price: xxx, ...etc... } } with all requirenments met (type, min value, required, ...etc...).
  * It must be exported, and "joi" must be required.
  */
 

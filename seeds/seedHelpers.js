@@ -1,4 +1,7 @@
-module.exports.descriptors = [ // export this array
+/**
+ * Export this array
+ */
+module.exports.descriptors = [
     'Forest',
     'Ancient',
     'Petrified',
@@ -19,7 +22,10 @@ module.exports.descriptors = [ // export this array
     'Diamond'
 ]
 
-module.exports.places = [ // export this array
+/**
+ * Export this array
+ */
+module.exports.places = [
     'Flats',
     'Village',
     'Canyon',
