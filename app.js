@@ -24,9 +24,9 @@ const methodOverride = require('method-override');
 // ====================
 
 /**
- * This is a schema for "joi" validation.
+ * These are schemas for "joi" validation.
  */
-const { campgroundSchema } = require('./schemas');
+const { campgroundSchema, reviewSchema } = require('./schemas');
 
 // ====================
 // MODELS
@@ -74,7 +74,7 @@ app.use(methodOverride('_method'));
 // ====================
 
 /**
- * The function "validateCampground" is for validating req.body when posting/putting campgrounds.
+ * This function is for validating req.body when posting/putting (creating/editing) campgrounds.
  * If there is an error,send it to the next error handling middleware (with message and error code).
  * If there are no errors, call the next function in the stack (i.e. the request).
  * Notes: 
@@ -85,6 +85,21 @@ const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     if(error){
         const msg = error.details.map((el) => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+/**
+ * This function is for validating req.body when posting/putting (creating/editing) reviews for campgrounds.
+ * Notes:
+    * Same methods apply as to the function "validateCampground".
+ */
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else {
         next();
@@ -180,7 +195,7 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
  * This is a post request to create a new review for an individual camp.
  * The form itself for creating the review is in the views/campgrounds/show.ejs.
  */
-app.post('/campgrounds/:id/reviews', catchAsync(async(req, res) => {
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
