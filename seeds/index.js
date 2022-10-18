@@ -14,6 +14,7 @@ const axios = require('axios');
 
 /**
  * Open Mongoose's default connection to MongoDB. "yelp-camp" is the database.
+ * 
  * Assign "db" variable to Mongoose module's default connection. Variable assigned to make things shorter.
  */
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
@@ -29,15 +30,18 @@ db.once("open", () => {
 
 /**
  * This is a function to seed images using "unsplash" API.
- * Key notes:
-    * "resp" is a response for an "axios" get request from "unsplash" API.
-    * There are a few params for this request:
-        * client_id - my access key to "unsplash" API.
-        * collections - collections of images that were used as seeds. The sring i used is a comma separated value.
-        * orientation - orientation of immage.
-        * count - the number of photos to return per request. Max count allowed by "unsplash" API is 30.
-    * The response ("resp") will now have an array of the data object. This can be checked in "postman" aswell.
-    * Then map the urls to an array and return it.
+ * 
+ * "resp" is a response for an "axios" get request from "unsplash" API.
+ * 
+ * There are a few params for this request:
+    * client_id - my access key to "unsplash" API.
+    * collections - collections of images that were used as seeds. The sring i used is a comma separated value.
+    * orientation - orientation of immage.
+    * count - the number of photos to return per request. Max count allowed by "unsplash" API is 30.
+    * 
+ * The response ("resp") will now have an array of the data object. This can be checked in "postman" aswell.
+ * 
+ * Then map the urls to an array and return it.
  */
 async function seedImgs() {
     try {
@@ -61,12 +65,14 @@ async function seedImgs() {
 
 /**
  * The purpose of this function is to select a random element from an array that is put into this function as an argument.
+ * 
  * The range of [index] will be any random number from 0 to array.length-1.
  */
 const sample = array => array[Math.floor(Math.random() * array.length)];
 
 /**
  * "random100" is any random whole number from 0 to 999.
+ * 
  * "price" is any  random whole number from 10 to 30.
  */
 const random1000 = Math.floor(Math.random() * 1000);

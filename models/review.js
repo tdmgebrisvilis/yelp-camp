@@ -1,7 +1,8 @@
 /**
  * This is the mongoose "Review" model.
- * The "mongoose.Schema" shortening to just "Schema" is optional
- * Firs create the "reviewSchema".
+ * 
+ * First create the "reviewSchema".
+ * 
  * Then export the "Review" model that uses "reviewSchema" schema.
  */
 const mongoose = require('mongoose');
