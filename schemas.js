@@ -1,11 +1,15 @@
 /**
  * This is a schema for "joi" validation of campgrounds that are to be created. 
- * Any object that will be validated with using this schema will have to have { campground { title: xxx, price: xxx, ...etc... } } with 
+ * 
+ * Any object that will be validated with using this schema will have to 
+ * have { campground { title: xxx, price: xxx, ...etc... } } with 
  * all requirenments met (type, min value, required, ...etc...).
+ * 
  * It must be exported, and "joi" must be required.
  */
 
 const Joi = require('joi')
+
 module.exports.campgroundSchema = Joi.object({
     campground: Joi.object({
         title: Joi.string().required(),
@@ -17,9 +21,10 @@ module.exports.campgroundSchema = Joi.object({
 })
 
 /**
- * This is a schema for "joi" validation of campground reviews that are to be created. 
+ * This is a schema for "joi" validation of campground REVIEWS that are to be created. 
+ * 
+ * Same rules apply as in above example with campground validation.
  */
-
 module.exports.reviewSchema = Joi.object({
     review: Joi.object({
         rating: Joi.number().min(1).max(5).required(),

@@ -4,12 +4,9 @@
 
 /**
  * These packages are required to run this app.
- * Notes:
- * Packages from npm: "express", "mongoose", "ejs-mate", "method-override".
- * Modules from node: "path".
- * Modules created by me: "catchAsync", "ExpressError".
- * Not all packages that are required to run this app were required in this 
- * file, e.g. "joi" was required in the "./schemas.js".
+ * 
+ * Note: not all packages that are required to run this app were required 
+ * in this file, e.g. "joi" was required in the "./schemas.js".
  */
 const express = require('express');
 const app = express();
@@ -24,9 +21,7 @@ const methodOverride = require('method-override');
 // SCHEMAS:
 // ====================
 
-/**
- * These are schemas for "joi" validation.
- */
+// These are schemas for "joi" validation.
 const { campgroundSchema, reviewSchema } = require('./schemas');
 
 // ====================
@@ -42,6 +37,7 @@ const Review = require('./models/review');
 
 /**
  * Open Mongoose's default connection to MongoDB. 
+ * 
  * "yelp-camp" is the database. If it doesn't exist yet, it'll be created.
  */
 mongoose.connect('mongodb://localhost:27017/yelp-camp'); 
@@ -70,6 +66,7 @@ app.use(express.urlencoded({ extended: true }));
 // (From method-override) - Override the "post" method and use it as "put" or "delete" etc. where needed:
 app.use(methodOverride('_method')); 
 
+
 // ====================
 // ERROR HANDLING ON THE SERVER SIDE
 // ====================
@@ -77,12 +74,15 @@ app.use(methodOverride('_method'));
 /**
  * This function is for validating req.body when posting/putting (creating / 
  * editing) campgrounds.
+ * 
  * If there is an error,send it to the next error handling middleware (with 
  * message and error code).
+ * 
  * If there are no errors, call the next function in the stack (i.e. the request).
- * Notes: 
+ * 
  * req.body is validated with using the "campgroundSchema" "Joi" validation, 
  * and "error" is destructured from it.
+ * 
  * "message" parameter is mapped from each element (el) of "error.details" array, 
  * and returned as a string ( join() ).
  */
@@ -99,7 +99,7 @@ const validateCampground = (req, res, next) => {
 /**
  * This function is for validating req.body when posting/putting (creating/editing) 
  * reviews for campgrounds.
- * Notes:
+ * 
  * Same methods apply as to the function "validateCampground".
  */
 const validateReview = (req, res, next) => {
@@ -117,6 +117,7 @@ const validateReview = (req, res, next) => {
 
 /**
  * Get request, page with form for new campground creation. 
+ * 
  * This would've conflicted with "/campgrounds/:id" if it went after it. 
  */
 app.get('/campgrounds/new', (req, res) => {
@@ -127,6 +128,7 @@ app.get('/campgrounds/new', (req, res) => {
 /**
  * Post request, to create a campground. With "validateCampground" for 
  * validation and "catchAsync" for catching errors.
+ * 
  * The new campground is created with information provided from req.body.campground.
  */
 app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
@@ -139,13 +141,12 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
 // CRUD: READ
 // ====================
 
+// Get request for path "/".
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-/**
- * Get request, to show all campgrounds.
- */
+// Get request, to show all campgrounds.
 app.get('/campgrounds', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds });
@@ -153,7 +154,7 @@ app.get('/campgrounds', catchAsync(async (req, res) => {
 
 /**
  * Get request, to show individual campgrounds.
- * Notes:
+ * 
  * populate "campground" with all data from "reviews" that are in it.
  */
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
@@ -162,12 +163,10 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
 }))
 
 // ====================
-// CRUD: EDIT
+// CRUD: UPDATE
 // ====================
 
- /**
-  * Get request, to edit individual campgrounds.
-  */
+// Get request, to edit individual campgrounds.
 app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
@@ -177,10 +176,9 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
 /**
  * Put request, to edit individual campgrounds. With "validateCampground" for 
  * validation and "catchAsync" for catching errors.
- * Notes:
+ * 
  * Campground is found by using "id" from req.params, then updated by ...SPREADING 
- * new updated data from req.body.campground (the 
- * data from the submitted form) into the found object.
+ * new updated data from req.body.campground (the data from the submitted form) into the found object.
  */
 app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -192,9 +190,7 @@ app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
 // CRUD: DELETE
 // ====================
 
-/**
- * Delete request, to delete individual campgrounds.
- */
+// Delete request, to delete individual campgrounds.
 app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
@@ -207,6 +203,7 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 
 /**
  * Post request for creating a new review for an individual camp.
+ * 
  * The form itself for creating the review is in the views/campgrounds/show.ejs.
  */
 app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res) => {
@@ -220,7 +217,9 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res) 
 
 /**
  * Delete request for deleting an individual review from an individual camp.
+ * 
  * The form itself for deleting the review is in the views/campgrounds/show.ejs.
+ * 
  * The "pull" is used here to pull the specific review's (the one that is 
  * being deleted) ID from the "reviews" array in the campground document.
  */
@@ -248,8 +247,11 @@ app.all('*', (req, res, next) => {
 /**
  * This is an express error handling middleware function. (4 params are required). Any 
  * error (err) will be sent sent into this middleware.
+ * 
  * Destructure "statusCode" from "err" (default 500).
+ * 
  * If there is no message, then it's 'Oh No, Something Went Wrong'.
+ * 
  * Respond with status code in console ("statusCode" from "err"); render "views/error" 
  * with "err" passed to it.
  */
@@ -263,9 +265,7 @@ app.use((err, req, res, next) => {
 // CONNECTION TO THE SERVER
 // ====================
 
-/**
- * Set up the server (express).
- */
+// Set up the server (express).
 app.listen(3000, () => {
     console.log('SERVING ON PORT 3000');
 });
