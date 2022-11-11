@@ -21,7 +21,9 @@ const methodOverride = require('method-override');
 // SCHEMAS:
 // ====================
 
-// These are schemas for "joi" validation.
+/**
+ * These are schemas for "joi" validation.
+ */
 const { campgroundSchema, reviewSchema } = require('./schemas');
 
 // ====================
@@ -30,6 +32,12 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
 
 const Campground = require('./models/campground');
 const Review = require('./models/review');
+
+// ====================
+// ROUTES
+// ====================
+
+const campgrounds = require('./routes/campgrounds');
 
 // ====================
 // MONGOOSE CONNECTION TO MONGO
@@ -67,34 +75,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method')); 
 
 
-// ====================
-// ERROR HANDLING ON THE SERVER SIDE
-// ====================
 
-/**
- * This function is for validating req.body when posting/putting (creating / 
- * editing) campgrounds.
- * 
- * If there is an error,send it to the next error handling middleware (with 
- * message and error code).
- * 
- * If there are no errors, call the next function in the stack (i.e. the request).
- * 
- * req.body is validated with using the "campgroundSchema" "Joi" validation, 
- * and "error" is destructured from it.
- * 
- * "message" parameter is mapped from each element (el) of "error.details" array, 
- * and returned as a string ( join() ).
- */
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map((el) => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
 
 /**
  * This function is for validating req.body when posting/putting (creating/editing) 
@@ -111,91 +92,19 @@ const validateReview = (req, res, next) => {
         next();
     }
 }
-// ====================
-// CRUD: CREATE
-// ====================
 
 /**
- * Get request, page with form for new campground creation. 
- * 
- * This would've conflicted with "/campgrounds/:id" if it went after it. 
+ * ROUTE STUFF
  */
-app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new');
-})
 
-// 
+app.use('/campgrounds', campgrounds);
+
 /**
- * Post request, to create a campground. With "validateCampground" for 
- * validation and "catchAsync" for catching errors.
- * 
- * The new campground is created with information provided from req.body.campground.
+ * Get request for path "/".
  */
-app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
-        const campground = new Campground(req.body.campground);
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
-}))
-
-// ====================
-// CRUD: READ
-// ====================
-
-// Get request for path "/".
-app.get('/', (req, res) => {
+ app.get('/', (req, res) => {
     res.render('home');
 });
-
-// Get request, to show all campgrounds.
-app.get('/campgrounds', catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
-}))
-
-/**
- * Get request, to show individual campgrounds.
- * 
- * populate "campground" with all data from "reviews" that are in it.
- */
-app.get('/campgrounds/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-    res.render('campgrounds/show', { campground });
-}))
-
-// ====================
-// CRUD: UPDATE
-// ====================
-
-// Get request, to edit individual campgrounds.
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit', { campground });
-}))
-
-// 
-/**
- * Put request, to edit individual campgrounds. With "validateCampground" for 
- * validation and "catchAsync" for catching errors.
- * 
- * Campground is found by using "id" from req.params, then updated by ...SPREADING 
- * new updated data from req.body.campground (the data from the submitted form) into the found object.
- */
-app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-    res.redirect(`/campgrounds/${campground._id}`);
-}))
-
-// ====================
-// CRUD: DELETE
-// ====================
-
-// Delete request, to delete individual campgrounds.
-app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect('/campgrounds');
-}))
 
 // ====================
 // CRUD (NOT FULL) FOR "REVIEWS"
@@ -265,7 +174,9 @@ app.use((err, req, res, next) => {
 // CONNECTION TO THE SERVER
 // ====================
 
-// Set up the server (express).
+/**
+ * Set up the server (express).
+ */
 app.listen(3000, () => {
     console.log('SERVING ON PORT 3000');
 });
