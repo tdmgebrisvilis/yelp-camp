@@ -76,7 +76,7 @@ app.use('/campgrounds/:id/reviews', reviews);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
-
+ 
 const sessionConfig = {
     secret: 'thisshouldbeabettersecret!',
     resave: false,
