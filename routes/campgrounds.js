@@ -60,9 +60,12 @@ const validateCampground = (req, res, next) => {
 
 // The new campground is created with information provided from req.body.campground.
 
+// Flash is added to display a flash message when a campground is successfully created.
+
 router.post('/', validateCampground, catchAsync(async (req, res, next) => {
         const campground = new Campground(req.body.campground);
         await campground.save();
+        req.flash('success', 'Successfully made a new campground!')
         res.redirect(`/campgrounds/${campground._id}`);
 }))
 
@@ -103,9 +106,12 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 // Campground is found by using "id" from req.params, then updated by ...SPREADING new updated data 
 // from req.body.campground (the data from the submitted form) into the found object.
 
+// Flash is added to display a flash message when a campground is successfully updated.
+
 router.put('/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    req.flash('success', 'Successfully updated campground!');
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
@@ -115,9 +121,12 @@ router.put('/:id', validateCampground, catchAsync(async (req, res) => {
 
 // Delete request, to delete individual campgrounds.
 
+// Flash is added to display a flash message when a campground is successfully deleted.
+
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted campground!');
     res.redirect('/campgrounds');
 }))
 

@@ -9,14 +9,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 </head>
 <body class="d-flex flex-column vh-100"><%# view height 100 %>
-    <!-- ejs: -->
+    <!-- ejs: include navbar partial-->
     <%- include('../partials/navbar') %>  
     <main class="container mt-5">
-        <%# ejs-mate %>
-        <%# This file is the boilerplate, while "body" will be the thing that will be inside this boilerplate %> 
+        <!-- ejs: include flash partial -->
+        <%- include('../partials/flash') %>  
+        <!-- ejs-mate: This file is the boilerplate, while "body" will be the thing that will be inside this boilerplate -->
         <%- body %>  
     </main>
-    <!-- ejs: -->
+    <!-- ejs: include footer partial-->
     <%- include('../partials/footer') %>  
     
 <!-- Bootstrap JavaScript Bundle with Popper -->

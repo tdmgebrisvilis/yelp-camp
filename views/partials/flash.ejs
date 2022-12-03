@@ -1,0 +1,18 @@
+<!-- This is a partial for flash messages, which is included in the boilerplate.ejs -->
+
+<!-- if success is true and it has a length, then show the flash message -->
+<% if(success && success.length) {%>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <!-- This variable is availabe here because it was defined in app.js flash middleware -->
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+    <!-- if error is true and it has a length, then show the flash message -->
+    <% if(error && error.length) {%>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <!-- This variable is availabe here because it was defined in app.js flash middleware -->
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>

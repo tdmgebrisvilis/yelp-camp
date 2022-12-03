@@ -57,12 +57,15 @@ const { reviewSchema } = require('../schemas');
  
 // The form itself for creating the review is in the views/campgrounds/show.ejs.
 
+// Flash is added to display a flash message when a review is successfully created.
+
  router.post('/', validateReview, catchAsync(async(req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
     await review.save();
     await campground.save();
+    req.flash('success', 'Created new review!');
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
@@ -77,10 +80,13 @@ const { reviewSchema } = require('../schemas');
 // The "pull" is used here to pull the specific review's (the one that is being deleted) ID from the "reviews" array 
 // in the campground document.
 
+// Flash is added to display a flash message when a review is successfully deleted.
+
 router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Successfully deleted review!');
     res.redirect(`/campgrounds/${id}`);
 }))
 

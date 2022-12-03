@@ -12,6 +12,7 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 // ====================
 // ROUTES
@@ -62,21 +63,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(methodOverride('_method')); 
 
-// (express) - When path is /campgrounds, use the "campgrounds" router
-
-app.use('/campgrounds', campgrounds);
-
-// (express) - When path is /reviews, use the "reviews" router
-
-app.use('/campgrounds/:id/reviews', reviews);
-
 // (express) - express.static is a built-in middleware function in Express. It serves static files and is based on serve-static.
 // This will make the "public" folder easily accessible.
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
- 
+
 const sessionConfig = {
     secret: 'thisshouldbeabettersecret!',
     resave: false,
@@ -88,7 +81,30 @@ const sessionConfig = {
     },
 }
 // This is the sessions middleware with the settings applied. 
-app.use(session(sessionConfig))
+
+app.use(session(sessionConfig));
+
+// This is the flash middleware
+
+app.use(flash());
+
+// This is how the flash middleware will be used. The "success" and "error" flash messages will be available in all 
+// files, like ejs files, in res.locals (this is from express). So in the ejs files e.g., they will be accessible as 
+// "success" and "error".
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error')
+    next();
+})
+
+// (express) - When path is /campgrounds, use the "campgrounds" router
+
+app.use('/campgrounds', campgrounds);
+
+// (express) - When path is /reviews, use the "reviews" router
+
+app.use('/campgrounds/:id/reviews', reviews);
 
 // ====================
 // ERROR HANDLING MIDDLEWARE
