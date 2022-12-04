@@ -84,8 +84,14 @@ router.get('/', catchAsync(async (req, res) => {
 
 // "campground" will be populated with all data from "reviews" that are in it.
 
+// Flash message added in case there was an arror
+
 router.get('/:id', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate('reviews');
+    if(!campground){
+        req.flash('error', 'Cannot find that campground!');
+        res.redirect('/campgrounds');
+    }
     res.render('campgrounds/show', { campground });
 }))
 
@@ -95,8 +101,14 @@ router.get('/:id', catchAsync(async (req, res) => {
 
 // Get request, to edit individual campgrounds.
 
+// A flash message will be shown if there was an error
+
 router.get('/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campgrounds');
+    }
     res.render('campgrounds/edit', { campground });
 }))
 
