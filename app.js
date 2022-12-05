@@ -3,7 +3,6 @@
 // ====================
 
 // Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
-
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -13,16 +12,27 @@ const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
+// ====================
+// MODELS
+// ====================
+
+const User = require('./models/user');
 
 // ====================
 // ROUTES
 // ====================
 
+// user route
+const userRoutes = require('./routes/users');
+
 // campgrounds route
-const campgrounds = require('./routes/campgrounds');
+const campgroundRoutes = require('./routes/campgrounds');
 
 // reviews route
-const reviews = require('./routes/reviews');
+const reviewRoutes = require('./routes/reviews');
 
 // ====================
 // MONGOOSE CONNECTION TO MONGO
@@ -44,23 +54,18 @@ db.once('open', () => {
 // ====================
 
 // (ejs-mate) - Use "ejs-mate" engine for "ejs" instead of the default one:
-
 app.engine('ejs', ejsMate);
 
 // (express) - Set "view engine" as "ejs":
-
 app.set('view engine', 'ejs');
 
 // (express) - Set "views" directory (for rendering) to be available from anywhere:
-
 app.set('views', path.join(__dirname, 'views')); 
 
 // (express) - Parse bodies from urls when there is POST request and where Content-Type header matches type option:
-
 app.use(express.urlencoded({ extended: true })); 
 
 // (method-override) - Override the "post" method and use it as "put" or "delete" etc. where needed:
-
 app.use(methodOverride('_method')); 
 
 // (express) - express.static is a built-in middleware function in Express. It serves static files and is based on serve-static.
@@ -69,7 +74,6 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
-
 const sessionConfig = {
     secret: 'thisshouldbeabettersecret!',
     resave: false,
@@ -80,31 +84,47 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
 }
-// This is the sessions middleware with the settings applied. 
 
+// This is the sessions middleware with the settings applied. 
 app.use(session(sessionConfig));
 
 // This is the flash middleware
-
 app.use(flash());
 
-// This is how the flash middleware will be used. The "success" and "error" flash messages will be available in all 
-// files, like ejs files, in res.locals (this is from express). So in the ejs files e.g., they will be accessible as 
-// "success" and "error".
+// This is the passport middleware.
+
+// passport.initialize() intializes Passport for incoming requests, allowing authentication strategies to be applied.
+app.use(passport.initialize());
+// passport.session() alters the request object and change the 'user' value that is currently the session id (from the client cookie) into 
+// the true deserialized user object.
+app.use(passport.session());
+// user will be authenticated with passport's local strategy "authenticate"
+passport.use(new LocalStrategy(User.authenticate()));
+
+// serializeUser is used to persist user data (after successful authentication) into session.
+passport.serializeUser(User.serializeUser());
+// deserializeUser is used to retrieve user data from session.
+passport.deserializeUser(User.deserializeUser());
+
+// Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
+// So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
 
 app.use((req, res, next) => {
+    console.log(req.session);
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error')
+    res.locals.error = req.flash('error');
     next();
 })
 
-// (express) - When path is /campgrounds, use the "campgrounds" router
+// (express) - When path is "/", use the "userRoutes" router
+app.use('/', userRoutes);
 
-app.use('/campgrounds', campgrounds);
+// (express) - When path is /campgrounds, use the "campgrounds" router
+app.use('/campgrounds', campgroundRoutes);
 
 // (express) - When path is /reviews, use the "reviews" router
-
-app.use('/campgrounds/:id/reviews', reviews);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 // ====================
 // ERROR HANDLING MIDDLEWARE
@@ -139,4 +159,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('SERVING ON PORT 3000');
 });
- 

@@ -1,3 +1,5 @@
+// This is a router for campgrounds
+
 // ====================
 // PACKAGES
 // ====================
@@ -6,6 +8,8 @@ const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
+// this is my own middleware
+const { isLoggedIn } = require('../middleware');
 
 // ====================
 // MODELS
@@ -44,25 +48,30 @@ const validateCampground = (req, res, next) => {
         next();
     }
 }
+
 // ====================
 // CRUD: CREATE
 // ====================
 
 // Get request, page with form for new campground creation. 
 
+// "isLoggedIn" middleware checks whether the user is logged in. If that's false, enterance will be prohibited.
+
 // This would've conflicted with "/campgrounds/:id" if it went after it. 
 
- router.get('/new', (req, res) => {
+ router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 })
 
 // Post request, to create a campground. With "validateCampground" for validation and "catchAsync" for catching errors.
 
+// "isLoggedIn" middleware checks whether the user is logged in. If that's false, enterance will be prohibited.
+
 // The new campground is created with information provided from req.body.campground.
 
 // Flash is added to display a flash message when a campground is successfully created.
 
-router.post('/', validateCampground, catchAsync(async (req, res, next) => {
+router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
         const campground = new Campground(req.body.campground);
         await campground.save();
         req.flash('success', 'Successfully made a new campground!')
@@ -101,9 +110,11 @@ router.get('/:id', catchAsync(async (req, res) => {
 
 // Get request, to edit individual campgrounds.
 
+// "isLoggedIn" middleware checks whether the user is logged in. If that's false, enterance will be prohibited.
+
 // A flash message will be shown if there was an error
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
         req.flash('error', 'Cannot find that campground!');
@@ -114,13 +125,15 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 
 
 // Put request, to edit individual campgrounds. With "validateCampground" for validation and "catchAsync" for catching errors.
+
+// "isLoggedIn" middleware checks whether the user is logged in. If that's false, enterance will be prohibited.
  
 // Campground is found by using "id" from req.params, then updated by ...SPREADING new updated data 
 // from req.body.campground (the data from the submitted form) into the found object.
 
 // Flash is added to display a flash message when a campground is successfully updated.
 
-router.put('/:id', validateCampground, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     req.flash('success', 'Successfully updated campground!');
@@ -133,9 +146,11 @@ router.put('/:id', validateCampground, catchAsync(async (req, res) => {
 
 // Delete request, to delete individual campgrounds.
 
+// "isLoggedIn" middleware checks whether the user is logged in. If that's false, enterance will be prohibited.
+
 // Flash is added to display a flash message when a campground is successfully deleted.
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted campground!');

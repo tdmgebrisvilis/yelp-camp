@@ -1,10 +1,9 @@
-/**
- * This is the mongoose "Review" model.
- * 
- * First create the "reviewSchema".
- * 
- * Then export the "Review" model that uses "reviewSchema" schema.
- */
+// This is the mongoose "Review" model.
+
+// First create the "reviewSchema".
+
+// Then export the "Review" model that uses "reviewSchema" schema.
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
