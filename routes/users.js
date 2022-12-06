@@ -1,13 +1,15 @@
 // This is a router for campgrounds
 
 // ====================
-// PACKAGES
+// PACKAGES & MIDDLEWARE
 // ====================
 
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
+const middleware = require('../middleware');
+
 
 // ====================
 // MODELS
@@ -60,6 +62,8 @@ router.post('/register', catchAsync(async (req, res, next) => {
     }
 }));
 
+
+
 // ====================
 // "LOGIN" & "LOGOUT" ROUTES
 // ====================
@@ -68,7 +72,12 @@ router.post('/register', catchAsync(async (req, res, next) => {
 
 // When on this path, render the login.ejs file, where the login form will be
 
+// IF returnTo is in the query string, put it into session
+
 router.get('/login', (req, res) => {
+    if (req.query.returnTo) {
+        req.session.returnTo = req.query.returnTo
+    }
     res.render('users/login');
 })
 
@@ -86,14 +95,14 @@ router.get('/login', (req, res) => {
 
 // Redirect to /campgrounds
 
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', middleware.checkReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
     req.flash('success', 'welcome back!');
-    const redirectUrl = req.session.returnTo || '/campgrounds';
-    delete req.session.returnTo;
+    const redirectUrl = res.locals.returnTo || '/campgrounds';
+    // delete req.session.returnTo;
     res.redirect(redirectUrl);
 })
 
-// Get route for logging out
+// CRUD: READ Get route for logging out
 
 // .logout() is a passport function
 

@@ -17,4 +17,15 @@ module.exports.isLoggedIn = (req, res, next) => {
         return res.redirect('/login');
     }
     next();
-}
+};
+
+// This middleware 
+
+// IF returnTo is in the session, put it into locals
+
+module.exports.checkReturnTo = (req, res, next) => {
+    if (req.session.returnTo) {
+        res.locals.returnTo = req.session.returnTo;
+    }
+    next();
+};

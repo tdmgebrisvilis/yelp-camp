@@ -27,9 +27,11 @@
 		<%# 
 		Form for creating a review.
 		%> 
+		<!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
+		<% if(currentUser){ %>
+		<h2>Leave a Review</h2>
 		<form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
 			<div class="mb-3">
-				<h2>Leave a Review</h2>
 				<label class="form-label" for="rating">Rating</label>
 				<input class="form-range" type="range" name="review[rating]" id="rating" min="1" max="5">
 			</div>
@@ -42,6 +44,10 @@
 			</div>
 			<button class="btn btn-success">Submit</button>
 		</form>
+		<% } else { %>
+			 <!-- when this button is pressed, go to the login screen + add a query string  -->
+			<a href="/login?returnTo=/campgrounds/<%= campground._id %>" class="btn btn-lg btn-primary">Leave a Review</a>
+			<% } %> 
 		<% for(let review of campground.reviews) { %> 
 		<div class="card mb-3">
 			<div class="card-body">
