@@ -7,47 +7,14 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
-const ExpressError = require('../utils/ExpressError');
-// this is my own middleware
-const { isLoggedIn } = require('../middleware');
+// This is my own middleware
+const { isLoggedIn, isAuthor, validateCampground } = require('../middleware');
 
 // ====================
 // MODELS
 // ====================
 
 const Campground = require('../models/campground');
-
-// ====================
-// SCHEMAS:
-// ====================
-
-// This is a schema for "joi" validation.
-
-const { campgroundSchema } = require('../schemas');
-
-// ====================
-// MIDDLEWARE
-// ====================
-
-// This function is for validating req.body when posting/putting (creating / editing) campgrounds.
-
-// If there is an error,send it to the next error handling middleware (with message and error code).
-
-// If there are no errors, call the next function in the stack (i.e. the request).
-
-// req.body is validated with using the "campgroundSchema" "Joi" validation, and "error" is destructured from it.
-
-// "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string ( join() ).
-
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map((el) => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
 
 // ====================
 // CRUD: CREATE
@@ -69,10 +36,13 @@ const validateCampground = (req, res, next) => {
 
 // The new campground is created with information provided from req.body.campground.
 
+// author is req.user._id for authentication
+
 // Flash is added to display a flash message when a campground is successfully created.
 
 router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
         const campground = new Campground(req.body.campground);
+        campground.author = req.user._id;
         await campground.save();
         req.flash('success', 'Successfully made a new campground!')
         res.redirect(`/campgrounds/${campground._id}`);
@@ -91,12 +61,22 @@ router.get('/', catchAsync(async (req, res) => {
 
 // Get request, to show individual campgrounds.
 
-// "campground" will be populated with all data from "reviews" that are in it.
+// Populate campground with "reviews", populate the reviews with "author"
+
+// Populate campground with "author"
+
+// "campground" will be populated with all data from "reviews" that are in it and with the 'author' information.
 
 // Flash message added in case there was an arror
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
+    const campground = await Campground.findById(req.params.id).populate({
+            path: 'reviews',
+            populate: {
+                path: 'author'
+            }
+        }).populate('author');
+        // console.log(campground);
     if(!campground){
         req.flash('error', 'Cannot find that campground!');
         res.redirect('/campgrounds');
@@ -114,7 +94,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 
 // A flash message will be shown if there was an error
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
         req.flash('error', 'Cannot find that campground!');
@@ -133,7 +113,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 
 // Flash is added to display a flash message when a campground is successfully updated.
 
-router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     req.flash('success', 'Successfully updated campground!');
@@ -150,7 +130,7 @@ router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) =
 
 // Flash is added to display a flash message when a campground is successfully deleted.
 
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted campground!');

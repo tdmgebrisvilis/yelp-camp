@@ -88,6 +88,7 @@ const price = Math.floor(Math.random() * 20) + 10;
     * Seed the database with (50) new documents (camps) based on the "Campground" model.
  * Notes:
     * "imgs" is a variable for the images from "unsplash" API. 
+    * added specific author (acc:foo pwd:bar). now all campgrounds will belong to this acc. After adding this, run this file.
     * "location" of "camp" is "cities" array index of random nr from 0 to 999 .city + "cities" array index of random nr from 0 to 999 .state.
     * "title" of "camp" is a "random element from "descriptors" array + random element from "places" array".
     * "image" of "camp" is a randomly selected image from the "imgs" array that is iterated over.
@@ -97,9 +98,10 @@ const seedDB = async () => {
     const imgs = await seedImgs();
     await Campground.deleteMany({});
     for (let i = 0; i < 50; i++) {
-        
+        const loc = sample(cities)
         const camp = new Campground({
-            location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            author: '638f90cc5be14c21222a665e',
+            location: `${loc.city}, ${loc.state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             image: sample(imgs),
             description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium ipsum, ea illum earum repellendus commodi tempora ratione, quasi ad pariatur tenetur iste nobis dicta deserunt placeat. Voluptate necessitatibus dolorum sunt?',

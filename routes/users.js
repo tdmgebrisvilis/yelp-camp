@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
-const middleware = require('../middleware');
+const {checkReturnTo} = require('../middleware');
 
 
 // ====================
@@ -95,7 +95,7 @@ router.get('/login', (req, res) => {
 
 // Redirect to /campgrounds
 
-router.post('/login', middleware.checkReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', checkReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
     req.flash('success', 'welcome back!');
     const redirectUrl = res.locals.returnTo || '/campgrounds';
     // delete req.session.returnTo;
