@@ -1,5 +1,3 @@
-// This is a router for reviews
-
 // PACKAGES, MIDDLEWARE MODELS, UTILS, CONTROLLERS
 
 const express = require('express');
@@ -12,12 +10,8 @@ const Campground = require('../models/campground');
 const Review = require('../models/review');
 const reviews = require('../controllers/reviews');
 
-// CRUD: CREATE
-
 // Post request for creating a new review for an individual camp.
  router.post('/', isLoggedIn, validateReview, catchAsync(reviews.createReview));
-
-// CRUD: DELETE
 
 // Delete request for deleting an individual review from an individual camp.
 router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync(reviews.deleteReview));

@@ -1,5 +1,3 @@
-// These are the controllers for the campgrounds routes.
-
 // MODELS
 
 const Campground = require('../models/campground');

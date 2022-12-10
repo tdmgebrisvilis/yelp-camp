@@ -1,14 +1,10 @@
 // This is the mongoose "Review" model.
 
-// First create the "reviewSchema".
-
-// author is a reference which is a reference to a User instance (model)
-
-// Then export the "Review" model that uses "reviewSchema" schema.
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Create the "reviewSchema".
+// author is a reference which is a reference to a User instance (model).
 const reviewSchema = new Schema({
     body: String,
     rating: Number,
@@ -18,4 +14,5 @@ const reviewSchema = new Schema({
     },
 });
 
+// Export the "Review" model that uses "reviewSchema" schema.
 module.exports = mongoose.model("Review", reviewSchema);

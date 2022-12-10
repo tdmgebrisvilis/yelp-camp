@@ -1,19 +1,14 @@
-// Require "mongoose"
+// This is the mongoose "Campground" model.
+
+// PACKAGES AND MODELS
 const mongoose = require('mongoose');
-
-// Require "Review" from "review" file
 const Review = require('./review');
-
 // This is simply "mongoose.Schema" shortened to just "Schema"
 const Schema = mongoose.Schema;
 
-/**
- * This is a mongoose schema for creating a campground.
- * 
- * "author" is the user ID from the "User" model? S52L520 
- * 
- * "reviews" is an array of documents (their IDs) from the "Review" model.
- */
+// This is a mongoose schema for creating a campground.
+// "author" is the user ID from the "User" model? S52L520.
+// "reviews" is an array of documents (their IDs) from the "Review" model.
 const CampgroundSchema = new Schema({
     title: String,
     image: String,
@@ -32,12 +27,8 @@ const CampgroundSchema = new Schema({
     ],
 });
 
-/**
- * After a campground is deleted, do this:
- * 
- * IF something (doc) was found and deleted, delete the reviews that 
- * are in ($in) that document's "reviews" array.
- */
+// After a campground is deleted, delete all reviews that are associeted with it.
+// IF something (doc) was found and deleted, delete the reviews that are in ($in) that document's "reviews" array.
 CampgroundSchema.post('findOneAndDelete', async function (doc) {
     if(doc){
         await Review.deleteMany({

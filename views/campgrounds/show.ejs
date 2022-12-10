@@ -1,6 +1,6 @@
-<!-- ejs-mate -->
+<!-- ejs-mate boilerplate -->
 <% layout('layouts/boilerplate') %>
-<!-- css stylesheet for start reviews -->
+<!-- css stylesheet for star reviews -->
 <link rel="stylesheet" href="/stylesheets/stars.css">
 <div class="row">
 	<div class="col-6">
@@ -32,9 +32,7 @@
 		</div>
 	</div>
 	<div class="col-6">
-		<%# 
-		Form for creating a review.
-		%> 
+		<!-- Form for creating a review. -->
 		<!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
 		<% if(currentUser){ %>
 		<h2>Leave a Review</h2>
@@ -75,7 +73,7 @@
 				 <p class="starability-result" data-rating="<%=review.rating%>">
 					 Rated: <%= review.rating %> stars
 				 </p>
-				 <!-- <h6 class="card-subtitle mb-2 text-muted">By <ejs%= review.author.username%></h6> -->
+				 <!-- <h6 class="card-subtitle mb-2 text-muted">By <XXXXXX%= review.author.username%></h6> -->
 				 <p class="card-text">Review: <%= review.body %></p>
 				 <!-- if a user is logged in and review.author is the same as currentUser.id, then show this div -->
 				 <%  if( currentUser && review.author.equals(currentUser._id))  {%>

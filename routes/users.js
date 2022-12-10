@@ -1,5 +1,3 @@
-// This is a router for campgrounds
-
 // PACKAGES, MIDDLEWARE, MODELS, UTILS, CONTROLLERS
 const express = require('express');
 const router = express.Router();

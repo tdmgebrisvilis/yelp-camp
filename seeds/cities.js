@@ -1,6 +1,4 @@
-/**
- * Export this array
- */
+// Export this array
 module.exports = [
     {
         city: "New York",
