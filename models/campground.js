@@ -11,13 +11,18 @@ const Schema = mongoose.Schema;
 // "reviews" is an array of documents (their IDs) from the "Review" model.
 const CampgroundSchema = new Schema({
     title: String,
-    image: String,
+    images: [
+        {
+            url: String,
+            filename: String,
+        },
+    ],
     price: Number,
     description: String,
     location: String,
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
     },
     reviews: [
         {

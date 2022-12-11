@@ -4,13 +4,18 @@ const router = express.Router();
 const campgrounds = require('../controllers/campgrounds');
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, isAuthor, validateCampground } = require('../middleware');
+const multer = require('multer');
+// /index.js doesn't have to be specified after ../cloudinary, because node looks for index.js files automatically.
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
+
 const Campground = require('../models/campground');
 
 // All campgrounds routes.
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
-
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
+    
 // New campground route. This would've conflicted with "/campgrounds/:id" if it went after it.
 router.get('/new', isLoggedIn, campgrounds.renderNewForm);
 

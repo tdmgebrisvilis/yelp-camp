@@ -11,12 +11,15 @@ module.exports.renderNewForm = (req, res) => {
 
 // Controller of new campground creation (POST).
 // The new campground is created with information provided from req.body.campground.
+// campground.images are mapped images that are found in req.files thanks to multer package.
 // author is req.user._id for authentication.
 // Flash is added to display a flash message when a campground is successfully created.
 module.exports.createCampground = async (req, res, next) => {
     const campground = new Campground(req.body.campground);
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
     await campground.save();
+    console.log(campground);
     req.flash('success', 'Successfully made a new campground!')
     res.redirect(`/campgrounds/${campground._id}`);
 };
