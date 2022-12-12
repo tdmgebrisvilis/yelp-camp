@@ -1,48 +1,63 @@
 <!-- ejs-mate -->
-<% layout('layouts/boilerplate') %> 
+<% layout('layouts/boilerplate') %>
 <div class="row">
     <h1 class="text-center">Edit Campground</h1>
     <!-- offset-3 in this case will center the column: -->
     <div class="col-6 offset-3">
-        <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate class="validated-form">
+        <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
-                <input class="form-control" type="text" id="title" name="campground[title]" value="<%= campground.title %>" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+                <input class="form-control" type="text" id="title" name="campground[title]" value="<%= campground.title %>" required />
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name="campground[location]" value="<%= campground.location %>" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="image">Image Url</label>
-                <input class="form-control" type="text" id="image" name="campground[image]" value="<%= campground.image %>" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+                <input class="form-control" type="text" id="location" name="campground[location]" value="<%= campground.location %>" required />
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="price">Campground Price</label>
                 <div class="input-group">
                     <span class="input-group-text" id="price-label">$</span>
-                    <input id="price" type="text" class="form-control" placeholder="0.00" aria-label="price" aria-describedby="price-label" 
-                    name="campground[price]" value="<%= campground.price %>" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
+                    <input
+                        id="price"
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        aria-label="price"
+                        aria-describedby="price-label"
+                        name="campground[price]"
+                        value="<%= campground.price %>"
+                        required />
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required><%= campground.description %></textarea>
-                <div class="valid-feedback">
-                    Looks good!
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <!-- all file related stuff here is from bootstrap. The backend stuff is made possible with multer package -->
+            <div class="mb-3">
+                <label for="image" class="form-label"></label>
+                <input class="form-control form-file-input" type="file" id="image" name="image" multiple >
+            </div>
+            <!-- this div is for deletion of images when editing a campground -->
+            <div class="mb-3">
+                <!-- iterate over all images (make a loop) and make changes that are in the function: -->
+                <% campground.images.forEach(function(img, i) {  %>
+                <!-- show the image thumbnail. Thumbnail is accessible because a virtual for the ImageSchema was created in the campground model. -->
+                <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="">
+                <!-- container div for bootstrap checkbox -->
+                <div class="form-check-inline">
+                    <!-- the actual checkbox, its id is looped (like everything in this fn), so on first repetition it is "image-0", 
+                    on the second its "image-1", etc. Name of this input is "deleteImages[]", which will be reflected in the 
+                    campgrounds Joi validation schema and will be under the same name. Value is the deleted (checked) image's filename. -->
+                    <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
                 </div>
+                <!-- looped label, same like the input -->
+                <label for="image-<%=i%>">Delete?</label>
+                <% })%>
             </div>
             <div class="mb-3">
                 <button class="btn btn-info">Update Campground</button>

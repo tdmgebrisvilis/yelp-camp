@@ -1,5 +1,3 @@
-// PACKAGES, UTILS, MODELS
-// Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
 
 // If we're running in development mode, require 'dotenv' package, which will take variables from the .env file and make them available
 // at process.env (for example console.log(process.env.SECRET) will show the SECRET variable).
@@ -7,6 +5,9 @@
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 };
+// PACKAGES, UTILS, MODELS
+// Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -83,7 +84,7 @@ passport.deserializeUser(User.deserializeUser());
 // Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
 // So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
 app.use((req, res, next) => {
-    // console.log(req.session);
+    //// console.log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -108,12 +109,12 @@ app.all('*', (req, res, next) => {
 }) 
 
 // This is an express error handling middleware function. (4 params are required). Any error (err) will be sent sent into this middleware.
-// Destructure "statusCode" from "err" (default 500).
-// If there is no message, then it's 'Oh No, Something Went Wrong'.
-// Respond with status code in console ("statusCode" from "err"); render "views/error"  with "err" passed to it.
 app.use((err, req, res, next) => {
+    // Destructure "statusCode" from "err" (default 500).
     const { statusCode = 500 } = err;
+    // If there is no message, then it's 'Oh No, Something Went Wrong'.
     if(!err.message) err.message = 'Oh No, Something Went Wrong'
+    // Respond with status code in console ("statusCode" from "err"); render "views/error.ejs"  with "err" passed to it.
     res.status(statusCode).render('error', { err });
 })
 

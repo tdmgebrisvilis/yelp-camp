@@ -1,14 +1,15 @@
 <!-- ejs-mate: this file will now be inside the boilerplate as the "body"-->
-<% layout('layouts/boilerplate') %> 
+<% layout('layouts/boilerplate') %>
 <h1>All Campgounds</h1>
 <div>
     <a class="btn btn-success mb-3" href="/campgrounds/new">Add Campground</a>
 </div>
-<% for (let campground of campgrounds) { %> 
+<% for (let campground of campgrounds) { %>
 <div class="card mb-3">
     <div class="row">
         <div class="col-md-4">
-            <img class="img-fluid" src="<%= campground.image %>" alt="">
+            <!-- show only the first image of the campground -->
+            <img src="<%= campground.images[0].url %>" class="d-block w-100" alt="..." />
         </div>
         <div class="col-md-8">
             <div class="card-body">
@@ -21,5 +22,5 @@
             </div>
         </div>
     </div>
-</div>    
-<% } %> 
+</div>
+<% } %>
