@@ -2,6 +2,11 @@
 // based on what is put into the seedDB function. 
 // Run this file through node.
 
+// For .env secret files
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+};
+
 // PACKAGES, IMPORTS, MODELS
 
 const mongoose = require('mongoose');
@@ -10,7 +15,8 @@ const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
 const Review = require('../models/review');
 const axios = require('axios');
-require('dotenv').config();
+
+
 
 // MONGOOSE CONNECTION TO MONGO
 

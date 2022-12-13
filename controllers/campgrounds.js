@@ -1,7 +1,18 @@
+// For .env secret files
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+};
+
 // MODELS
 
 const Campground = require('../models/campground');
 const { cloudinary } = require("../cloudinary");
+
+// Geocoder:
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 
 // CRUD: CREATE
 
@@ -12,11 +23,18 @@ module.exports.renderNewForm = (req, res) => {
 
 // Controller of new campground creation (POST).
 module.exports.createCampground = async (req, res, next) => {
+    // forwardGeocode function to get coordinates geojson from the campground location
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+      }).send()  
     // The new campground is created with information provided from req.body.campground (which is accessible after submitting the form.)
     const campground = new Campground(req.body.campground);
+    // campground.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
+    campground.geometry = geoData.body.features[0].geometry;
     // campground.images are mapped images that are found in req.files thanks to multer package.
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-    // author is req.user._id for authentication.
+    // author is req.user._id for authentication.```
     campground.author = req.user._id;
     await campground.save();
     console.log(campground);

@@ -1,10 +1,10 @@
-
 // If we're running in development mode, require 'dotenv' package, which will take variables from the .env file and make them available
 // at process.env (for example console.log(process.env.SECRET) will show the SECRET variable).
 // On a sidenote, before deploying, the app is running in development mode by default.
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 };
+
 // PACKAGES, UTILS, MODELS
 // Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
 
@@ -84,7 +84,7 @@ passport.deserializeUser(User.deserializeUser());
 // Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
 // So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
 app.use((req, res, next) => {
-    //// console.log(req.session);
+    console. log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
