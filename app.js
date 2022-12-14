@@ -88,7 +88,7 @@ passport.deserializeUser(User.deserializeUser());
 // Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
 // So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
 app.use(async(req, res, next) => {
-    // console. log(req.session);
+    console. log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');

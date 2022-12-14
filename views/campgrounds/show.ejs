@@ -9,14 +9,21 @@
         <!-- This div is for the carousel for navigating through multiple photos -->
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                <!-- for each mampground.images (loop over them) -->
+                <!-- if the campground has no images, show the default image -->
+                <% if (!campground.images.length) { %>
+                <img
+                    src="<%='https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg'%>"
+                    class="d-block w-100"
+                    alt="..." />    
+                    <% } %> 
+                <!-- If it has images, then for each campground.images (loop over them) -->
                 <% campground.images.forEach((img, i) => { %>
                 <!-- if "i" is equal to 0, add the class of 'active', otherwise add nothing -->
                 <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
                     <img src="<%= img.url %>" class="d-block w-100" alt="..." />
                 </div>
                 <% }) %>
-                <!-- if there are more than 1 photos, display these 2 buttons -->
+                <!-- if there are more than 1 photos, display these 2 buttons (left/right navigation) -->
                 <% if(campground.images.length > 1) {%>
                 <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -47,7 +54,6 @@
                 <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
                     <button class="btn btn-danger">Delete</button>
                 </form>
-                <!--// <a class="card-link btn btn-warning" href="/campgrounds/">All Campgrounds</a> -->
             </div>
             <% } %>
             <div class="card-footer text-muted">2 days ago</div>

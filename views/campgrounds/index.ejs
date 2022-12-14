@@ -8,8 +8,17 @@
 <div class="card mb-3">
     <div class="row">
         <div class="col-md-4">
-            <!-- show only the first image of the campground -->
+            <!-- If a campground has any images -->
+            <% if (campground.images.length) { %>
+            <!-- show only the first image of that campground -->
             <img src="<%= campground.images[0].url %>" class="d-block w-100" alt="..." />
+            <% } else {%>
+            <!-- if the campground has no images, show this default image -->
+            <img
+                src="<%= 'https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg' %>"
+                class="d-block w-100"
+                alt="..." />
+            <% } %>
         </div>
         <div class="col-md-8">
             <div class="card-body">
