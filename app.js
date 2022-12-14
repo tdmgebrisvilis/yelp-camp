@@ -19,13 +19,17 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const Campground = require('./models/campground');
+const { cloudinary, storage } = require("./cloudinary");
 const User = require('./models/user');
+
 
 // ROUTES
 
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const { log } = require('console');
 
 // MONGOOSE CONNECTION TO MONGO
 
@@ -83,11 +87,19 @@ passport.deserializeUser(User.deserializeUser());
 
 // Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
 // So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
-app.use((req, res, next) => {
-    console. log(req.session);
+app.use(async(req, res, next) => {
+    // console. log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+    // If there are no campgrounds at all, delete all photos from "YelpCamp" folder in Cloudinary, in case there are some leftovers.
+    if (req._parsedOriginalUrl.path === '/campgrounds') {
+        const campgrounds = await Campground.find({});
+        if(!campgrounds.length){
+            cloudinary.api.delete_resources_by_prefix('YelpCamp/');
+            console.log('DELETED ALL PHOTOS (IF THERE WERE ANY) FROM YELPCAMP FOLDER IN CLOUDINARY BECAUSE THERE ARE NO CAMPS!!!!');
+        } 
+    } 
     next();
 })
 

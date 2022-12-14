@@ -3,8 +3,6 @@ if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 };
 
-// MODELS
-
 const Campground = require('../models/campground');
 const { cloudinary } = require("../cloudinary");
 
