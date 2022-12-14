@@ -15,8 +15,12 @@ const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
 const Review = require('../models/review');
 const axios = require('axios');
-
-
+//*v
+// Geocoder:
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+//*^
 
 // MONGOOSE CONNECTION TO MONGO
 
@@ -94,6 +98,17 @@ const seedDB = async () => {
             // "location" of "camp" is "cities" array index of random nr from 0 to the array.length & state of the same city.
             location: `${loc.city}, ${loc.state}`,
             // "title" of "camp" is a "random element from "descriptors" array + random element from "places" array".
+            //*v
+            geometry: async function (){
+                // forwardGeocode function to get coordinates geojson from the campground location
+                const geoData = await geocoder.forwardGeocode({
+                query: camp.location,
+                limit: 1
+                }).send();
+                // campground.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
+                return geoData.body.features[0].geometry;
+            },
+            //*^
             title: `${sample(descriptors)} ${sample(places)}`,
             // "images" will be added with using the "pickImgs" function.
             images: pickImgs(imgsCopy),
