@@ -113,6 +113,7 @@
 <!-- the mapbox token will not be shown as a secret, it will be visible -->
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN  %>';
+    // this is a stringified JSON version of "campgrounds"
     const campground = <%- JSON.stringify(campground) %>;
 </script>
 <script src="/javascripts/showPageMap.js"></script>

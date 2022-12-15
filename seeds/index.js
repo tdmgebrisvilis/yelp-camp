@@ -85,8 +85,9 @@ const seedDB = async () => {
     // "imgs" is a variable for the images from "unsplash" API. 
     const imgs = await seedImgs();
     const imgsCopy = imgs.slice();
-    await Campground.deleteMany({});
-    await Review.deleteMany({});
+    // uncomment these 2 if running seedDB once. If more than once, these must be commented out. 
+    //! await Campground.deleteMany({});
+    //! await Review.deleteMany({});
     for (let i = 0; i < 30; i++) {
         const loc = sample(cities);
         const camp = new Campground({
@@ -115,8 +116,17 @@ const seedDB = async () => {
 
 // Execution
 
-// Run "seedDB" function, then close the connection.
-seedDB().then(() => {
-    mongoose.connection.close();
-});
+// // Run "seedDB" function, then close the connection.
+// seedDB().then(() => {
+//     mongoose.connection.close();
+// });
 
+const threeHunderedCamps = async function () {
+    for (let i = 0; i < 10; i++) {
+        await seedDB();
+    };
+    seedDB().then(() => {
+        mongoose.connection.close();
+    });
+};
+threeHunderedCamps();

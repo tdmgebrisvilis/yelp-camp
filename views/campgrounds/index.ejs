@@ -1,5 +1,6 @@
 <!-- ejs-mate: this file will now be inside the boilerplate as the "body"-->
 <% layout('layouts/boilerplate') %>
+<div id="map" style="width: 100%; height: 500px;"></div>
 <h1>All Campgounds</h1>
 <div>
     <a class="btn btn-success mb-3" href="/campgrounds/new">Add Campground</a>
@@ -33,3 +34,9 @@
     </div>
 </div>
 <% } %>
+<script>
+    const mapToken = '<%- process.env.MAPBOX_TOKEN  %>';
+    // this is a stringified JSON version of "campgrounds". It was put under key "features" because that is what the cluster map expects at clusterMap.js
+    const campgrounds = {features: <%- JSON.stringify(campgrounds) %>};
+</script>
+<script src="/javascripts/clusterMap.js"></script>
