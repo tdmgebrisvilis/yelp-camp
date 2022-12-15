@@ -4,8 +4,7 @@
 <link rel="stylesheet" href="/stylesheets/stars.css" />
 <div class="row">
     <div class="col-6">
-        <!-- from mapbox docs, to display map -->
-        <div id='map' style='width: 400px; height: 300px;'></div>
+        
         <!-- This div is for the carousel for navigating through multiple photos -->
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -60,6 +59,8 @@
         </div>
     </div>
     <div class="col-6">
+        <!-- from mapbox docs, to display map -->
+        <div id='map'></div>
         <!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
         <% if(currentUser){ %>
         <!-- Form for creating a review. -->

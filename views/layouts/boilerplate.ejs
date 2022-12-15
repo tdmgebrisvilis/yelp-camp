@@ -10,6 +10,8 @@
     <!-- mapbox  -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="d-flex flex-column vh-100"><%# view height 100 %>
     <!-- ejs: include navbar partial-->
@@ -23,11 +25,16 @@
     <!-- ejs: include footer partial-->
     <%- include('../partials/footer') %>  
     
-<!-- Bootstrap JavaScript Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-
-<!-- Bootstrap form validation script, served as a static asset from ../../public/validateForms.js -->
-<script src="/javascripts/validateForms.js"></script>
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap form validation script, served as a static asset from ../../public/validateForms.js -->
+    <script src="/javascripts/validateForms.js"></script>
+    
+    <!-- *v -->
+    <%- include('../partials/variables') %>  
+    <script src="/javascripts/app.js"></script>
+    <!-- *^ -->
 
 </body>
 </html>

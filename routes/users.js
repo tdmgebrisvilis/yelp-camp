@@ -7,7 +7,13 @@ const {checkReturnTo} = require('../middleware');
 const User = require('../models/user');
 const users = require('../controllers/users');
 
-// Register a new user routes
+// Home route
+router.route('/')
+    .get((req, res) => {
+        res.render('home')
+    })
+
+    // Register a new user routes
 router.route('/register')
     .get(users.renderRegister)
     .post(catchAsync(users.register));

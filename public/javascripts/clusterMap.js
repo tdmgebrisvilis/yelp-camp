@@ -2,7 +2,7 @@
 mapboxgl.accessToken = mapToken;
 // create the map
 const map = new mapboxgl.Map({
-container: 'map',
+container: 'cluster-map', // container ID (used in index.ejs)
 // Use regular map projection type instead of the default globe projection.
 projection: 'naturalEarth',
 // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
@@ -10,6 +10,9 @@ style: 'mapbox://styles/mapbox/light-v11',
 center: [-103.5917, 40.6699],
 zoom: 3
 });
+
+// Add controlls to the map (zoom in/out etc.)
+map.addControl(new mapboxgl.NavigationControl());
  
 map.on('load', () => {
 // Add a new source from our GeoJSON data and
