@@ -22,6 +22,8 @@ const LocalStrategy = require('passport-local');
 const Campground = require('./models/campground');
 const { cloudinary, storage } = require("./cloudinary");
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 
 // ROUTES
@@ -29,7 +31,7 @@ const User = require('./models/user');
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
-const { log } = require('console');
+// const { log } = require('console');
 
 // MONGOOSE CONNECTION TO MONGO
 
@@ -57,13 +59,18 @@ app.use(methodOverride('_method'));
 // (express) - express.static is a built-in middleware function in Express. It serves static files and is based on serve-static.
 // This will make the "public" folder easily accessible.
 app.use(express.static(path.join(__dirname, 'public')));
+// activate express-mongo-sanitize package
+app.use(mongoSanitize());
+
 // (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
 const sessionConfig = {
+    name: 'session',
     secret: 'thisshouldbeabettersecret!',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
@@ -72,6 +79,54 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 // This is the flash middleware
 app.use(flash());
+// "helmet" activation
+app.use(helmet());
+//*
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net",
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/drrmOuwdp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+//*
 // This is the passport middleware.
 // passport.initialize() intializes Passport for incoming requests, allowing authentication strategies to be applied.
 app.use(passport.initialize());
@@ -88,7 +143,8 @@ passport.deserializeUser(User.deserializeUser());
 // Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
 // So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
 app.use(async(req, res, next) => {
-    console. log(req.session);
+    // console. log(req.session);
+    // console.log(req.query);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
