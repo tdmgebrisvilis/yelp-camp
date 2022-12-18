@@ -25,7 +25,7 @@ module.exports.createCampground = async (req, res, next) => {
     const geoData = await geocoder.forwardGeocode({
         query: req.body.campground.location,
         limit: 1
-      }).send()  
+      }).send();  
     // The new campground is created with information provided from req.body.campground (which is accessible after submitting the form.)
     const campground = new Campground(req.body.campground);
     // campground.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
@@ -83,10 +83,16 @@ module.exports.renderEditForm = async (req, res) => {
 // Controller for updating an individual campground (PUT).
 module.exports.updateCampground = async (req, res) => {
     const { id } = req.params;
-    //// console.log(req.body);
+    // forwardGeocode function to get coordinates geojson from the campground location
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+      }).send(); 
     // Campground is found by using "id" from req.params, then updated by ...SPREADING new updated data
     // from req.body.campground (the data from the submitted form) into the found object.
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    // campground.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
+    campground.geometry = geoData.body.features[0].geometry;
     // imgs is an array of a mapped array of images that are found in req.files thanks to multer package.
     // This will make ann array with objects that have the key:value pairs that are required in the campground model. 
     const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));

@@ -47,7 +47,7 @@
                 <!-- iterate over all images (make a loop) and make changes that are in the function: -->
                 <% campground.images.forEach(function(img, i) {  %>
                 <!-- show the image thumbnail. Thumbnail is accessible because a virtual for the ImageSchema was created in the campground model. -->
-                <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="">
+                <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="" crossorigin>
                 <!-- container div for bootstrap checkbox -->
                 <div class="form-check-inline">
                     <!-- the actual checkbox, its id is looped (like everything in this fn), so on first repetition it is "image-0", 

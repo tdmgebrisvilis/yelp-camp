@@ -9,7 +9,6 @@ if (process.env.NODE_ENV !== "production") {
 // Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
 
 const express = require('express');
-const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
@@ -24,6 +23,14 @@ const { cloudinary, storage } = require("./cloudinary");
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo');
+
+// PRODUCTION dbUrl:
+// const dbUrl = process.env.DB_URL;
+// DEVELOPMENT dbUrl:
+// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+// BOTH (run mongoDB url first, if that doesn't work, run localhost)
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 
 // ROUTES
@@ -31,13 +38,11 @@ const helmet = require('helmet');
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
-// const { log } = require('console');
+const { log } = require('console');
 
 // MONGOOSE CONNECTION TO MONGO
 
-// Open Mongoose's default connection to MongoDB. 
-// "yelp-camp" is the database. If it doesn't exist yet, it'll be created.
-mongoose.connect('mongodb://localhost:27017/yelp-camp'); 
+mongoose.connect(dbUrl); 
 const db = mongoose.connection; 
 db.on('error', console.error.bind(console, 'connection error:')); 
 db.once('open', () => { 
@@ -45,7 +50,8 @@ db.once('open', () => {
 })
 
 // MIDDLEWARE
-
+// Execute express
+const app = express();
 // (ejs-mate) - Use "ejs-mate" engine for "ejs" instead of the default one:
 app.engine('ejs', ejsMate);
 // (express) - Set "view engine" as "ejs":
@@ -60,18 +66,38 @@ app.use(methodOverride('_method'));
 // This will make the "public" folder easily accessible.
 app.use(express.static(path.join(__dirname, 'public')));
 // activate express-mongo-sanitize package
-app.use(mongoSanitize());
+app.use(mongoSanitize({
+    replaceWith: '_'
+}));
+
+// first pick secret for mongoDB, if that doesn't work use the other secret
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
+// mongo store creation for storing cookies in mongoDB
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60, // seconds
+    crypto: {
+        secret,
+    }
+});
+
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR', e);
+})
 
 // (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
 const sessionConfig = {
+    // session data will now be stored in mongoDB
+    store, // same as store: store
     name: 'session',
-    secret: 'thisshouldbeabettersecret!',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
         // secure: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // miliseconds
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
 }
@@ -81,7 +107,7 @@ app.use(session(sessionConfig));
 app.use(flash());
 // "helmet" activation
 app.use(helmet());
-//*
+
 const scriptSrcUrls = [
     "https://stackpath.bootstrapcdn.com/",
     "https://api.tiles.mapbox.com/",
@@ -119,14 +145,14 @@ app.use(
                 "'self'",
                 "blob:",
                 "data:",
-                "https://res.cloudinary.com/drrmOuwdp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://res.cloudinary.com/drrm0uwdp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
                 "https://images.unsplash.com/",
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
         },
     })
 );
-//*
+
 // This is the passport middleware.
 // passport.initialize() intializes Passport for incoming requests, allowing authentication strategies to be applied.
 app.use(passport.initialize());
@@ -145,11 +171,14 @@ passport.deserializeUser(User.deserializeUser());
 app.use(async(req, res, next) => {
     // console. log(req.session);
     // console.log(req.query);
+    // log(req.url)
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     // If there are no campgrounds at all, delete all photos from "YelpCamp" folder in Cloudinary, in case there are some leftovers.
-    if (req._parsedOriginalUrl.path === '/campgrounds') {
+    // I found req._parsedOriginalUrl.path by logging req, then found _parsedOriginalUrl, then found path in it.
+    //// if (req._parsedOriginalUrl.path === '/campgrounds') {
+    if (req.url === '/campgrounds') {
         const campgrounds = await Campground.find({});
         if(!campgrounds.length){
             cloudinary.api.delete_resources_by_prefix('YelpCamp/');
@@ -167,6 +196,10 @@ app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 // (express) - When path is /reviews, use the "reviews" router
 app.use('/campgrounds/:id/reviews', reviewRoutes);
+// "Home" route
+app.get('/', (req, res) => {
+    res.render('home')
+});
 
 // ERROR HANDLING MIDDLEWARE
 
@@ -188,7 +221,8 @@ app.use((err, req, res, next) => {
 
 // CONNECTION TO THE SERVER
 
-// Set up the server (express).
-app.listen(3000, () => {
-    console.log('SERVING ON PORT 3000');
-});
+// Port on which the app will run will be whatever is in "render's" process.env.PORT || OR 3000
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`)
+})

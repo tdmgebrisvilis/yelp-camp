@@ -13,13 +13,14 @@
                 <img
                     src="<%='https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg'%>"
                     class="d-block w-100"
-                    alt="..." />    
+                    alt="..." 
+                    crossorigin/>    
                     <% } %> 
                 <!-- If it has images, then for each campground.images (loop over them) -->
                 <% campground.images.forEach((img, i) => { %>
                 <!-- if "i" is equal to 0, add the class of 'active', otherwise add nothing -->
                 <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
-                    <img src="<%= img.url %>" class="d-block w-100" alt="..." />
+                    <img src="<%= img.url %>" class="d-block w-100" alt="..." crossorigin/>
                 </div>
                 <% }) %>
                 <!-- if there are more than 1 photos, display these 2 buttons (left/right navigation) -->
@@ -88,7 +89,7 @@
             <button class="btn btn-success">Submit</button>
         </form>
         <% } else { %>
-        <!-- when this button is pressed, go to the login screen + add a query string  -->
+        <!-- when this button is pressed, go to the login screen + add a query string "returnTo" -->
         <a href="/login?returnTo=/campgrounds/<%= campground._id %>" class="btn btn-lg btn-primary">Leave a Review</a>
         <% } %> <% for(let review of campground.reviews) { %>
         <div class="card mb-3">
@@ -96,7 +97,6 @@
                 <h5 class="card-title"><%= review.author.username%></h5>
                 <!-- from starabilitycss 'stars' stylesheet  -->
                 <p class="starability-result" data-rating="<%=review.rating%>">Rated: <%= review.rating %> stars</p>
-                <!--// <h6 class="card-subtitle mb-2 text-muted">By <XXXXXX%= review.author.username%></h6> -->
                 <p class="card-text">Review: <%= review.body %></p>
                 <!-- if a user is logged in and review.author is the same as currentUser.id, then show this div -->
                 <% if( currentUser && review.author.equals(currentUser._id)) {%>

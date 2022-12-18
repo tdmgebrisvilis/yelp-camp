@@ -13,10 +13,10 @@
         <!-- if "currentUser" is false, show "login" and "register" links. Else, show "logout" link-->
         <div class="navbar-nav ml-auto">
                 <% if(!currentUser) {%>
-                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/login?returnTo=/">Login</a>
                 <a class="nav-link" href="/register">Register</a>
                 <% } else {%>
-                <a class="nav-link" href="/logout">Logout</a>
+                <a class="nav-link" href="/logout?returnTo=/">Logout</a>
                 <% } %>
         </div>
       </div>
