@@ -1,7 +1,14 @@
 <!-- ejs-mate: this file will now be inside the boilerplate as the "body"-->
 <% layout('layouts/boilerplate') %>
 <div id="cluster-map"></div>
-<h1>All Campgounds</h1>
+<h1 >
+    <ul class="fw-bold mt-5 mb-5 ul-index-page">
+        <li>Below you will find all campgrounds that other users have submitted.</li>
+        <li>Feel free to leave a review and rate them.</li>
+        <li><a id="new-camp-link" href="/campgrounds/new">To add a campground to this list click this link or select "New Campground" above!</a></li>
+    </ul>
+</h1>
+<div class="campgrounds-container">
 <% for (let campground of campgrounds) { %>
 <div class="card mb-3">
     <div class="row">
@@ -21,10 +28,10 @@
         </div>
         <div class="col-md-8">
             <div class="card-body">
-                <h5 class="card-title"><%= campground.title %></h5>
+                <h5 class="card-title fw-bold"><%= campground.title %></h5>
                 <p class="card-text"><%= campground.description %></p>
                 <p class="card-text">
-                    <small class="text-muted"><%= campground.location %></small>
+                    <small class="text-muted fw-semibold"><%= campground.location %></small>
                 </p>
                 <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">View <%= campground.title %></a>
             </div>
@@ -32,6 +39,7 @@
     </div>
 </div>
 <% } %>
+</div>
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN  %>';
     // this is a stringified JSON version of "campgrounds". It was put under key "features" because that is what the cluster map expects at clusterMap.js

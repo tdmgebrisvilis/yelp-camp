@@ -13,7 +13,6 @@ const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
-const Review = require('../models/review');
 const axios = require('axios');
 // Geocoder:
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
@@ -54,14 +53,7 @@ async function seedImgs() {
         console.log(err);
     }
 };
-// Function for picking up an element from an array, then removing that element from the array.
-// If this function is in a loop, it allows picking one new element without repetition.
-// Currently not using this function.
-const pickImg = function(array){
-    const firstElement = array[0];
-    array.splice(0, 1);
-    return firstElement
-};
+
 
 // This function will make an array of 3 images that do not repeat. It will also delete the first element of the array.
 // This way, when this function is in a loop, there will not be repetition.
@@ -92,7 +84,7 @@ const seedDB = async () => {
         const loc = sample(cities);
         const camp = new Campground({
             // added specific author (acc:foo pwd:bar). now all campgrounds will belong to this acc.
-            author: '63973015f8e1d3534f48a1ff',
+            author: '63c6ebf563068a08bcdccf90',
             // "location" of "camp" is "cities" array index of random nr from 0 to the array.length & state of the same city.
             location: `${loc.city}, ${loc.state}`,
             // "title" of "camp" is a "random element from "descriptors" array + random element from "places" array".
