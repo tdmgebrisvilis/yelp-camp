@@ -70,3 +70,11 @@ nav + * {
     font-weight: 400;
     font-style: italic;
 }
+
+#campgroundCarousel {
+    height: 400px;
+}
+
+.carousel-inner {
+    height: inherit;
+}
