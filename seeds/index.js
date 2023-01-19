@@ -21,8 +21,9 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 // MONGOOSE CONNECTION TO MONGO
 
-// Open Mongoose's default connection to MongoDB. "yelp-camp" is the database.
-mongoose.connect('mongodb://localhost:27017/yelp-camp');
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
+
+mongoose.connect(dbUrl);
 // Assign "db" variable to Mongoose module's default connection. Variable assigned to make things shorter.
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -30,7 +31,7 @@ db.once("open", () => {
     console.log("Database connected");
 });
 
-// This is a function to seed images using "unsplash" API. // from udemy comments, lesson 430
+// This is a function to seed images using "unsplash" API. 
 async function seedImgs() {
     try {
         // "resp" is a response for an "axios" get request from "unsplash" API.
@@ -77,14 +78,10 @@ const seedDB = async () => {
     // "imgs" is a variable for the images from "unsplash" API. 
     const imgs = await seedImgs();
     const imgsCopy = imgs.slice();
-    // uncomment these 2 if running seedDB once. If more than once, these must be commented out. 
-    //! await Campground.deleteMany({});
-    //! await Review.deleteMany({});
-    for (let i = 0; i < 30; i++) {
         const loc = sample(cities);
         const camp = new Campground({
-            // added specific author (acc:foo pwd:bar). now all campgrounds will belong to this acc.
-            author: '63c6ebf563068a08bcdccf90',
+            //? add specific ID of the author of the campground that is to be created.
+            author: '***INSERT "AUTHOR" ID***',
             // "location" of "camp" is "cities" array index of random nr from 0 to the array.length & state of the same city.
             location: `${loc.city}, ${loc.state}`,
             // "title" of "camp" is a "random element from "descriptors" array + random element from "places" array".
@@ -103,22 +100,21 @@ const seedDB = async () => {
         // camp.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
         camp.geometry = geoData.body.features[0].geometry;
         await camp.save();
-    }
 }
 
 // Execution
 
-// // Run "seedDB" function, then close the connection.
-// seedDB().then(() => {
-//     mongoose.connection.close();
-// });
+// Run "seedDB" function, then close the connection.
+seedDB().then(() => {
+    mongoose.connection.close();
+});
 
-const threeHunderedCamps = async function () {
-    for (let i = 0; i < 9; i++) {
-        await seedDB();
-    };
-    seedDB().then(() => {
-        mongoose.connection.close();
-    });
-};
-threeHunderedCamps();
+// const threeHunderedCamps = async function () {
+//     for (let i = 0; i < 9; i++) {
+//         await seedDB();
+//     };
+//     seedDB().then(() => {
+//         mongoose.connection.close();
+//     });
+// };
+// threeHunderedCamps();
