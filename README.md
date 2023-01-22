@@ -1,6 +1,6 @@
 # YelpCamp
 [YelpCamp](https://yelpcamp-todamge.onrender.com/) is a website that allows users to find, rate, and review campgrounds in different locations 
-across the United States. The app was created as part of Colt Steele's "[The Web Developer Bootcamp 2022](https://www.udemy.com/course/the-web-developer-bootcamp/)" curriculum on Udemy.
+across the United States. The app was created as part of Colt Steele's [The Web Developer Bootcamp 2022](https://www.udemy.com/course/the-web-developer-bootcamp/) curriculum on Udemy.
 ## Technologies Used
 * Node.js  
 * Express  
