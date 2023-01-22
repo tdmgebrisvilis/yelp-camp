@@ -178,9 +178,9 @@ app.use(async(req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+    res.locals.URL = req.url;
     // If there are no campgrounds at all, delete all photos from "YelpCamp" folder in Cloudinary, in case there are some leftovers.
     // I found req._parsedOriginalUrl.path by logging req, then found _parsedOriginalUrl, then found path in it.
-    //// if (req._parsedOriginalUrl.path === '/campgrounds') {
     if (req.url === '/campgrounds') {
         const campgrounds = await Campground.find({});
         if(!campgrounds.length){

@@ -2,7 +2,7 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// syntax from cloudinary docs, except the secret 'process.env' stuff, which is from the .env file.
+// from cloudinary docs
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_KEY,

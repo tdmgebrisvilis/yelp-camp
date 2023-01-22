@@ -57,8 +57,8 @@ module.exports.login = (req, res) => {
     // "redirectUrl" is where client will be redirected. So he will be redirected to where he came from (show, because that is the only 
     // place where I have set up a link with custom query string) or to / (home).
     const redirectUrl = res.locals.returnTo || '/';
-    //// Delete the session info in the database.
-    // delete req.session.returnTo;
+    //? Delete the session info in the database.
+    delete req.session.returnTo;
     // Redirect to redirectUrl.
     res.redirect(redirectUrl);
 };

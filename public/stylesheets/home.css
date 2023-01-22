@@ -11,9 +11,17 @@ body {
   max-width: 60vw;
 }
 
+#login-logout-register {
+    margin-right: 20px;
+    font-weight: 600;
+}
+
 .nav-link {
-    padding: 0.25rem 0;
-    font-weight: 700;
+    /* padding: 0.25rem 0; */
+    /* font-weight: 700; */
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px;
     color: rgba(255,255,255,0.5);
     margin-left: 1rem;
     border-bottom: 0.25rem solid transparent;
@@ -34,3 +42,15 @@ body {
     color: #333;
     text-shadow: none;
 }
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+li {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2em;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+

@@ -8,10 +8,10 @@
         <div class="navbar-nav">
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link" href="/campgrounds">Campgrounds</a>
-          <a class="nav-link" href="/campgrounds/new">New Campground</a>
+          <a class="nav-link fw-semibold" href="/campgrounds/new"><img src="imgs/add.png" alt="">Add New Campground</a>
         </div>
         <!-- if "currentUser" is false, show "login" and "register" links. Else, show "logout" link-->
-        <div class="navbar-nav ml-auto">
+        <div id="login-logout-register" class="navbar-nav position-absolute end-0">
                 <% if(!currentUser) {%>
                 <a class="nav-link" href="/login?returnTo=/">Login</a>
                 <a class="nav-link" href="/register">Register</a>

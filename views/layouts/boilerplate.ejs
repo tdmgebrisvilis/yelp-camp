@@ -10,12 +10,15 @@
     <!-- mapbox  -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js' crossorigin></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' crossorigin/>
-    <!-- Google fonts: -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@400;500;600&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <!-- my stylesheet -->
     <link rel="stylesheet" href="/stylesheets/app.css">
+    <% if (URL.includes('/register') || URL.includes('login')) { %> 
+        <style>
+            body {background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80"); background-position: center center; background-size: cover;}
+            .card { border: 1px solid grey;}
+            .card-body {background: #edede9;}
+        </style>
+    <% } %> 
 </head>
 <body class="d-flex flex-column vh-100"><%# view height 100 %>
     <!-- ejs: include navbar partial-->
@@ -34,6 +37,5 @@
 
 <!-- Bootstrap form validation script, served as a static asset from ../../public/validateForms.js -->
 <script src="/javascripts/validateForms.js"></script>
-
 </body>
 </html>

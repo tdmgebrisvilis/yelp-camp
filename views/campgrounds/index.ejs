@@ -1,13 +1,6 @@
 <!-- ejs-mate: this file will now be inside the boilerplate as the "body"-->
 <% layout('layouts/boilerplate') %>
 <div id="cluster-map"></div>
-<h1 >
-    <ul class="fw-bold mt-5 mb-5 ul-index-page">
-        <li>Below you will find all campgrounds that other users have submitted.</li>
-        <li>Feel free to leave a review and rate them.</li>
-        <li><a id="new-camp-link" href="/campgrounds/new">To add a campground to this list click this link or select "New Campground" above!</a></li>
-    </ul>
-</h1>
 <div class="campgrounds-container">
 <% for (let campground of campgrounds) { %>
 <div class="card mb-3">
