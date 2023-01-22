@@ -40,7 +40,7 @@ const CampgroundSchema = new Schema({
     price: Number,
     description: String,
     location: String,
-    // "author" is the user ID from the "User" model? S52L520.
+    // "author" is the user ID from the "User" model. (wdb S52L520)
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',

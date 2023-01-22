@@ -1,4 +1,4 @@
-//// const campground = require("../../models/campground");
+// This script is for the map in the "show" page
 
 // from mapbox docs, for displaying the map mapToken from show.ejs
 mapboxgl.accessToken = mapToken;

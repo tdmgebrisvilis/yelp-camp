@@ -24,8 +24,10 @@ const extension = (joi) => ({
 
 const Joi = BaseJoi.extend(extension);
 
-// This is a schema for "joi" validation of campgrounds that are to be created / modified or deleted. Any object that will be validated with using this
-// schema will have to have { campground { title: xxx, price: xxx, ...etc... } } with all requirenments met (type, min value, required, ...etc...).
+// This is a schema for "joi" validation of campgrounds that are to be 
+// created / modified or deleted. Any object that will be validated with 
+// using this schema will have to have { campground { title: xxx, price: xxx, ...etc... } } with 
+// all requirenments met (type, min value, required, ...etc...).
 module.exports.campgroundSchema = Joi.object({
     // This is for creation:
     campground: Joi.object({

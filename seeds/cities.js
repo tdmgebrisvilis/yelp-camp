@@ -1,4 +1,3 @@
-// Export this array
 module.exports = [
     {
         city: "New York",

@@ -35,7 +35,7 @@ module.exports.validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     // If there is an error,send it to the next error handling middleware (with message and error code).
     if (error) {
-        // "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string ( join() ).
+        // "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string.
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else {
@@ -78,7 +78,7 @@ module.exports.validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
     // If there is an error,send it to the next error handling middleware (with message and error code).
     if (error) {
-        // "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string ( join() ).
+        // "message" parameter is mapped from each element (el) of "error.details" array, and returned as a string.
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else {

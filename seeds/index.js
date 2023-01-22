@@ -8,7 +8,6 @@ if (process.env.NODE_ENV !== "production") {
 };
 
 // PACKAGES, IMPORTS, MODELS
-
 const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
@@ -20,11 +19,10 @@ const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 // MONGOOSE CONNECTION TO MONGO
-
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 mongoose.connect(dbUrl);
-// Assign "db" variable to Mongoose module's default connection. Variable assigned to make things shorter.
+// Assign "db" variable to Mongoose module's default connection.
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
@@ -72,15 +70,14 @@ const pickImgs = function(array){
 // The range of [index] will be any random number from 0 to array.length-1.
 const sample = array => array[Math.floor(Math.random() * array.length)];
 
-// This function: 1) deletes all previous documents from "campgrounds" collection (in "yelp-camp" db); 2) seeds the database with (50) new 
-// documents (camps) based on the "Campground" model.
+// This function seeds the database with a new document (campground) based on the "Campground" model.
 const seedDB = async () => {
     // "imgs" is a variable for the images from "unsplash" API. 
     const imgs = await seedImgs();
     const imgsCopy = imgs.slice();
         const loc = sample(cities);
         const camp = new Campground({
-            //? add specific ID of the author of the campground that is to be created.
+            //todo add specific ID of the author of the campground that is to be created.
             author: '***INSERT "AUTHOR" ID***',
             // "location" of "camp" is "cities" array index of random nr from 0 to the array.length & state of the same city.
             location: `${loc.city}, ${loc.state}`,
@@ -108,13 +105,3 @@ const seedDB = async () => {
 seedDB().then(() => {
     mongoose.connection.close();
 });
-
-// const threeHunderedCamps = async function () {
-//     for (let i = 0; i < 9; i++) {
-//         await seedDB();
-//     };
-//     seedDB().then(() => {
-//         mongoose.connection.close();
-//     });
-// };
-// threeHunderedCamps();

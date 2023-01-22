@@ -1,5 +1,4 @@
 // MODELS
-
 const User = require('../models/user');
 
 // "REGISTER" ROUTES:
@@ -65,7 +64,7 @@ module.exports.login = (req, res) => {
 
 // Controller for logging out.
 module.exports.logout = (req, res) => {
-    // .logout() is a passport function.
+    // .logout() is a "passport" function.
     req.logout(err => {
         if (err) return next(err)
     })

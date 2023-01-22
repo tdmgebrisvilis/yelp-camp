@@ -11,7 +11,6 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
-
 // CRUD: CREATE
 
 // Controller of "new campground" page where there's a form to create a new campground (GET).
@@ -32,7 +31,7 @@ module.exports.createCampground = async (req, res, next) => {
     campground.geometry = geoData.body.features[0].geometry;
     // campground.images are mapped images that are found in req.files thanks to multer package.
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-    // author is req.user._id for authentication.```
+    // author is req.user._id for authentication.
     campground.author = req.user._id;
     await campground.save();
     console.log(campground);
@@ -88,7 +87,7 @@ module.exports.updateCampground = async (req, res) => {
         query: req.body.campground.location,
         limit: 1
       }).send(); 
-    // Campground is found by using "id" from req.params, then updated by ...SPREADING new updated data
+    // Campground is found by using "id" from req.params, then updated by ...spreading new updated data
     // from req.body.campground (the data from the submitted form) into the found object.
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     // campground.geometry will be what we got from the geoData function, at geoData.body.features[0].geometry.
@@ -116,7 +115,7 @@ module.exports.updateCampground = async (req, res) => {
     res.redirect(`/campgrounds/${campground._id}`);
 };
 
-// Controllerr for deleting an individual campground.
+// Controller for deleting an individual campground.
 module.exports.deleteCampground = async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);

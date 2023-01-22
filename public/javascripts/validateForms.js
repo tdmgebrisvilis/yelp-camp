@@ -1,4 +1,4 @@
-// Bootstrap form validation script
+// This is a Bootstrap form validation script
 
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 

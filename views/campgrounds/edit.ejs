@@ -2,7 +2,6 @@
 <% layout('layouts/boilerplate') %>
 <div class="row">
     <h1 class="text-center">Edit Campground</h1>
-    <!-- offset-3 in this case will center the column: -->
     <div class="col-md-6 offset-md-3">
         <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
             <div class="mb-3">
@@ -37,7 +36,7 @@
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required><%= campground.description %></textarea>
                 <div class="valid-feedback">Looks good!</div>
             </div>
-            <!-- all file related stuff here is from bootstrap. The backend stuff is made possible with multer package -->
+            <!-- all file related code here is from bootstrap. The backend code is made possible with the "multer" package -->
             <div class="mb-3">
                 <label for="image" class="form-label"></label>
                 <input class="form-control form-file-input" type="file" id="image" name="image" multiple >

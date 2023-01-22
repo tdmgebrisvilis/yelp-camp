@@ -1,12 +1,8 @@
-// If we're running in development mode, require 'dotenv' package, which will take variables from the .env file and make them available
-// at process.env (for example console.log(process.env.SECRET) will show the SECRET variable).
-// On a sidenote, before deploying, the app is running in development mode by default.
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 };
 
 // PACKAGES, UTILS, MODELS
-// Note: not all packages that are required to run this app were required in this file, e.g. "joi" was required in the "./schemas.js".
 
 const express = require('express');
 const path = require('path');
@@ -25,11 +21,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const MongoStore = require('connect-mongo');
 
-// PRODUCTION dbUrl:
-// const dbUrl = process.env.DB_URL;
-// DEVELOPMENT dbUrl:
-// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
-// BOTH (run mongoDB url first, if that doesn't work, run localhost)
+// Database URL: (run mongoDB url first, if that doesn't work, run localhost)
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 
@@ -38,7 +30,6 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
-const { log } = require('console');
 
 // MONGOOSE CONNECTION TO MONGO
 
@@ -50,6 +41,7 @@ db.once('open', () => {
 })
 
 // MIDDLEWARE
+
 // Execute express
 const app = express();
 // (ejs-mate) - Use "ejs-mate" engine for "ejs" instead of the default one:
@@ -71,12 +63,12 @@ app.use(mongoSanitize({
 }));
 
 // first pick secret for mongoDB, if that doesn't work use the other secret
-const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+const secret = process.env.SECRET || 'verysecretsecret';
 
 // mongo store creation for storing cookies in mongoDB
 const store = MongoStore.create({
     mongoUrl: dbUrl,
-    touchAfter: 24 * 60 * 60, // seconds
+    touchAfter: 24 * 60 * 60, // 24h in seconds
     crypto: {
         secret,
     }
@@ -86,7 +78,7 @@ store.on('error', function (e) {
     console.log('SESSION STORE ERROR', e);
 })
 
-// (express-session) - these are the settings for this app's sessions, that go into the sessions middleware below
+// (express-session) - settings for this app's sessions, that go into the sessions middleware below
 const sessionConfig = {
     // session data will now be stored in mongoDB
     store, // same as store: store
@@ -97,17 +89,18 @@ const sessionConfig = {
     cookie: {
         httpOnly: true,
         // secure: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // miliseconds
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week in miliseconds
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
 }
-// This is the sessions middleware with the settings applied. 
+// sessions middleware with the settings applied. 
 app.use(session(sessionConfig));
-// This is the flash middleware
+// flash middleware
 app.use(flash());
 // "helmet" activation
 app.use(helmet());
 
+// Allowed URLs for CSP
 const scriptSrcUrls = [
     "https://stackpath.bootstrapcdn.com/",
     "https://api.tiles.mapbox.com/",
@@ -135,6 +128,7 @@ const fontSrcUrls = [
     "https://fonts.gstatic.com"
 ];
 
+// "helmet" SCP settings
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
@@ -156,11 +150,12 @@ app.use(
     })
 );
 
-// This is the passport middleware.
+// PASSPORT MIDDLEWARE
+
 // passport.initialize() intializes Passport for incoming requests, allowing authentication strategies to be applied.
 app.use(passport.initialize());
-// passport.session() alters the request object and change the 'user' value that is currently the session id (from the client cookie) into 
-// the true deserialized user object.
+// passport.session() alters the request object and change the 'user' value 
+// that is currently the session id (from the client cookie) into the true deserialized user object.
 app.use(passport.session());
 // user will be authenticated with passport's local strategy "authenticate"
 passport.use(new LocalStrategy(User.authenticate()));
@@ -169,23 +164,19 @@ passport.serializeUser(User.serializeUser());
 // deserializeUser is used to retrieve user data from session.
 passport.deserializeUser(User.deserializeUser());
 
-// Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (this is from express). 
-// So in the ejs files e.g., they will be accessible as "currentUser", "success" and "error".
+// Variables "currentUser", "success", and "error" will be available in all files, like ejs files, from res.locals (from express docs). 
+// Therefore e.g. in the ejs files, they will be accessible as "currentUser", "success" and "error".
 app.use(async(req, res, next) => {
-    // console. log(req.session);
-    // console.log(req.query);
-    // log(req.url)
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.URL = req.url;
     // If there are no campgrounds at all, delete all photos from "YelpCamp" folder in Cloudinary, in case there are some leftovers.
-    // I found req._parsedOriginalUrl.path by logging req, then found _parsedOriginalUrl, then found path in it.
     if (req.url === '/campgrounds') {
         const campgrounds = await Campground.find({});
         if(!campgrounds.length){
             cloudinary.api.delete_resources_by_prefix('YelpCamp/');
-            console.log('DELETED ALL PHOTOS (IF THERE WERE ANY) FROM YELPCAMP FOLDER IN CLOUDINARY BECAUSE THERE ARE NO CAMPS!!!!');
+            console.log('DELETED ALL PHOTOS (IF THERE WERE ANY) FROM YELPCAMP FOLDER IN CLOUDINARY BECAUSE THERE ARE NO CAMPS.');
         } 
     } 
     next();
@@ -193,11 +184,11 @@ app.use(async(req, res, next) => {
 
 // ROUTES MIDDLEWARE 
 
-// (express) - When path is "/", use the "userRoutes" router
+// When path is "/", use the "userRoutes" router
 app.use('/', userRoutes);
-// (express) - When path is /campgrounds, use the "campgrounds" router
+// When path is /campgrounds, use the "campgrounds" router
 app.use('/campgrounds', campgroundRoutes);
-// (express) - When path is /reviews, use the "reviews" router
+// When path is /reviews, use the "reviews" router
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 // "Home" route
 app.get('/', (req, res) => {
@@ -212,11 +203,9 @@ app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
 }) 
 
-// This is an express error handling middleware function. (4 params are required). Any error (err) will be sent sent into this middleware.
+// This is an express error handling middleware function. Any error (err) will be sent sent into this middleware.
 app.use((err, req, res, next) => {
-    // Destructure "statusCode" from "err" (default 500).
     const { statusCode = 500 } = err;
-    // If there is no message, then it's 'Oh No, Something Went Wrong'.
     if(!err.message) err.message = 'Oh No, Something Went Wrong'
     // Respond with status code in console ("statusCode" from "err"); render "views/error.ejs"  with "err" passed to it.
     res.status(statusCode).render('error', { err });

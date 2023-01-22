@@ -9,5 +9,4 @@ class ExpressError extends Error {
     }
 };
 
-// Export this class. 
 module.exports = ExpressError;
