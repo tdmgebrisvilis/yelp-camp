@@ -1,9 +1,9 @@
 <!-- ejs-mate boiler -->
 <% layout('layouts/boilerplate') %>
-<div class="row">
-    <h1 class="text-center">New Campground</h1>
+<div class="row mt-5 pt-5">
     <!-- offset-3 in this case will center the column:  -->
-    <div class="col-md-6 offset-md-3">
+    <div id="new-camp" class="col-md-6 offset-md-3">
+        <h1 class="text-center mt-2">New Campground</h1>
         <!-- "validated-form" & "novalidate" are here for for bootstrap validation.  -->
         <!-- enctype="multipart/form-data" is from MDN, this is for being able to upload files in the form -->
         <form action="/campgrounds" method="POST" class="validated-form" novalidate enctype="multipart/form-data">
