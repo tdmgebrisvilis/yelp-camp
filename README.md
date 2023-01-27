@@ -16,19 +16,26 @@ across the United States. The app was created as part of Colt Steele's [The Web 
 * Users can add campgrounds that they have visited and edit/delete the campgrounds they have added  
 * Main page displays all campgrounds on an interactive map  
 ## Dependencies
-| Dependency | Dependency |
-| --- | --- |
-| @mapbox/mapbox-sdk | axios |
-| cloudinary | connect-flash |
-| connect-mongo | dotenv |
-| ejs | ejs-mate |
-| express | express-mongo-sanitize |
-| express-session | helmet |
-| joi | method-override |
-| mongoose | multer |
-| multer-storage-cloudinary | passport |
-| passport-local | passport-local-mongoose |
-| sanitize-html |
-
+* @mapbox/mapbox-sdk  
+* axios  
+* cloudinary  
+* connect-flash  
+* connect-mongo  
+* dotenv  
+* ejs  
+* ejs-mate  
+* express  
+* express-mongo-sanitize  
+* express-session  
+* helmet  
+* joi  
+* method-override  
+* mongoose  
+* multer  
+* multer-storage-cloudinary  
+* passport  
+* passport-local  
+* passport-local-mongoose  
+* sanitize-html  
 ## Deployment
 The app is deployed on [Render](https://render.com/) and can be accessed at **https://yelpcamp-todamge.onrender.com/**. Please note that it might take a few seconds to load the page at first.
