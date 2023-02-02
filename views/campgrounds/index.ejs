@@ -4,17 +4,17 @@
 <div class="campgrounds-container">
 <% for (let campground of campgrounds) { %>
 <div class="card mb-3">
-    <div class="row">
+    <div class="row border-bottom">
         <div class="col-md-4">
             <!-- If a campground has any images -->
             <% if (campground.images.length) { %>
             <!-- show only the first image of that campground -->
-            <img src="<%= campground.images[0].url %>" class="d-block w-100" alt="..." crossorigin/>
+            <img src="<%= campground.images[0].url %>" class="d-block w-100 mb-3" alt="..." crossorigin/>
             <% } else {%>
             <!-- if the campground has no images, show this default image -->
             <img
                 src="<%= 'https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg' %>"
-                class="d-block w-100"
+                class="d-block w-100 mb-3"
                 alt="..." 
                 crossorigin/>
             <% } %>

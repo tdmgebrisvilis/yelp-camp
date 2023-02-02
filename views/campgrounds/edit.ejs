@@ -42,9 +42,10 @@
                 <input class="form-control form-file-input" type="file" id="image" name="image" multiple >
             </div>
             <!-- this div is for deletion of images when editing a campground -->
-            <div class="mb-3">
-                <!-- iterate over all images (make a loop) and make changes that are in the function: -->
+            <div class="mb-3 images-for-deletion d-flex flex-wrap">
+                <!-- iterate over all images and make changes that are in the function: -->
                 <% campground.images.forEach(function(img, i) {  %>
+                    <div>
                 <!-- show the image thumbnail. Thumbnail is accessible because a virtual for the ImageSchema was created in the campground model. -->
                 <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="" crossorigin>
                 <!-- container div for bootstrap checkbox -->
@@ -56,12 +57,13 @@
                 </div>
                 <!-- looped label, same like the input -->
                 <label for="image-<%=i%>">Delete?</label>
+            </div>
                 <% })%>
             </div>
-            <div class="mb-3">
-                <button class="btn btn-info">Update Campground</button>
+            <div class="mb-3 d-flex justify-content-between">
+                <button class="btn btn-info">Confirm Changes</button>
+                <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>">Back To Campground</a>
             </div>
         </form>
-        <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>">Back To Campground</a>
     </div>
 </div>

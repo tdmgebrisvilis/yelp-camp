@@ -10,6 +10,9 @@ across the United States. The app was created as part of Colt Steele's [The Web 
 * Helmet (middleware for security)  
 * Passport (middleware for authentication)  
 * Render (hosting service)  
+* APIs:
+  * Cloudinary (image uploads and storage)
+  * Mapbox (interactive map)
 ## Features
 * Users can find campgrounds in different locations in the US  
 * Users can rate campgrounds and leave reviews  
@@ -38,4 +41,4 @@ across the United States. The app was created as part of Colt Steele's [The Web 
 * passport-local-mongoose  
 * sanitize-html  
 ## Deployment
-The app is deployed on [Render](https://render.com/) and can be accessed at **https://yelpcamp-todamge.onrender.com/**. Please note that it might take a few seconds to load the page at first.
+The app is deployed on [Render](https://render.com/) and can be accessed at **https://yelpcamp-todamge.onrender.com/**. Please note that it might take up to 15 seconds to load the page at first.

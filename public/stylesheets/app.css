@@ -1,24 +1,10 @@
-#cluster-map {
-    width: 100%;
-    height: 500px;
-    margin-bottom: 30px;
+/* G L O B A L */
+body {
+    background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
-
-#map {
-    width: 100%;
-    height: 300px;
-}
-
-.campgrounds-container {
-    display: flex; 
-    flex-direction: column-reverse;
-}
-
-body,
-.card.mb-3 > .row {
-    background: #edede9;
-}
-
 nav + * {
     padding-top: 15px;
 }
@@ -33,19 +19,6 @@ nav + * {
 .footer .container {
   display: flex;
   justify-content: center;
-}
-
-#campgroundCarousel {
-    height: 400px;
-}
-
-.carousel-inner {
-    height: inherit;
-}
-
-#login-logout-register {
-    margin-right: 20px;
-    font-weight: 600;
 }
 
 .nav-link {
@@ -67,15 +40,19 @@ nav + * {
     border-bottom-color:white;
 
 }
-.card-body,
-.card.shadow {
-    width: 400px;
-    border-radius: 10px;
+
+#login-logout-register {
+    margin-right: 20px;
+    font-weight: 600;
+    position: absolute;
+    right: 0;
+}
+@media (max-width: 991.98px) {
+  #login-logout-register {
+    position: static;
+  }
 }
 
-.card.shadow {
-    margin-top: 20vh;
-}
 
 .alert {
     transition: all 0.5s ease-out;
@@ -91,7 +68,73 @@ nav + * {
     opacity: 0;
     transition: all 0.5s ease-out;
 }
-#new-camp {
-    border: 1px solid rgba(178, 190, 181, 0.4);
+
+/* I N D E X    P A G E */
+#cluster-map {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+.campgrounds-container,
+#reviewsContainer {
+    display: flex; 
+    flex-direction: column-reverse;
+}
+
+div.card.mb-3 {
+    background: transparent;
+    border: none;
+}
+
+.campgrounds-container .card-text + .btn-primary {
+    width: 14rem;
+} 
+.campgrounds-container .card-text{
+    text-align: justify;
+} 
+.campgrounds-container img {
     border-radius: 10px;
 }
+
+/* S H O W    P A G E */
+#map,
+#campgroundCarousel img {
+    width: 100%;
+    height: 300px;
+}
+
+ul.list-group li {
+    background-color: transparent
+}
+
+#campgroundCarousel {
+    height: 300px;
+}
+
+.carousel-inner {
+    height: inherit;
+}
+
+#campgroundCarousel + .card > .card-body {
+    width: inherit;
+}
+#campgroundCarousel + .card > .card-body .card-text {
+    text-align: justify;
+}
+
+/* L O G I N    /    L O G O U T    PAGES */
+.container.login-register .card.shadow {
+    margin-top: 20vh;
+    width: 400px;
+}
+.container.login-register .card-body {
+    border-radius: 10px;
+}
+
+/* E D I T    P A G E */
+.images-for-deletion img {
+    width: 100px;
+}
+
+/* N E W    P A G E */

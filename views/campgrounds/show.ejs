@@ -3,7 +3,7 @@
 <!-- css stylesheet for star reviews -->
 <link rel="stylesheet" href="/stylesheets/stars.css" />
 <div class="row">
-    <div class="col-6">
+    <div class="col-lg-6">
         <!-- This div is for the carousel for navigating through multiple photos -->
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -55,41 +55,43 @@
                 </form>
             </div>
             <% } %>
+              <!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
+        <% if(currentUser && !campground.author.equals(currentUser._id)){ %>
+            <!-- Form for creating a review. -->
+            <h2>Leave a Review!</h2>
+            <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
+                <!-- This 'fieldset' is from 'starabilitycss', for star rating -->
+                <fieldset class="starability-basic">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review Text</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <button class="btn btn-success">Submit</button>
+            </form>
+            <% } else if (!currentUser) { %>
+            <!-- when this button is pressed, go to the login screen + add a query string "returnTo" -->
+            <a href="/login?returnTo=/campgrounds/<%= campground._id %>" class="btn btn-lg btn-primary">Leave a Review</a>
+            <% } %>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-lg-6">
         <!-- from mapbox docs, to display the map -->
         <div id='map' class="mb-3"></div>
-        <!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
-        <% if(currentUser){ %>
-        <!-- Form for creating a review. -->
-        <h2>Leave a Review!</h2>
-        <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
-            <!-- This 'fieldset' is from 'starabilitycss', for star rating -->
-            <fieldset class="starability-basic">
-                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
-                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                <label for="first-rate1" title="Terrible">1 star</label>
-                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                <label for="first-rate2" title="Not good">2 stars</label>
-                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                <label for="first-rate3" title="Average">3 stars</label>
-                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                <label for="first-rate4" title="Very good">4 stars</label>
-                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                <label for="first-rate5" title="Amazing">5 stars</label>
-            </fieldset>
-            <div class="mb-3">
-                <label class="form-label" for="body">Review Text</label>
-                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-                <div class="valid-feedback">Looks good!</div>
-            </div>
-            <button class="btn btn-success">Submit</button>
-        </form>
-        <% } else { %>
-        <!-- when this button is pressed, go to the login screen + add a query string "returnTo" -->
-        <a href="/login?returnTo=/campgrounds/<%= campground._id %>" class="btn btn-lg btn-primary">Leave a Review</a>
-        <% } %> <% for(let review of campground.reviews) { %>
+        <div id="reviewsContainer">
+       <% for(let review of campground.reviews) { %>
         <div class="card mb-3">
             <div class="card-body w-100">
                 <h5 class="card-title fs-6 text-primary"><%= review.author.username%></h5>
@@ -106,6 +108,7 @@
             </div>
         </div>
         <% } %>
+        </div>
     </div> 
 </div>
 <!-- "mapToken" and "campground" will be rendered to showPageMap.js in public/javascripts -->
