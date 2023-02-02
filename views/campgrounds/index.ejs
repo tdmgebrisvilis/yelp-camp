@@ -1,4 +1,3 @@
-<!-- ejs-mate: this file will now be inside the boilerplate as the "body"-->
 <% layout('layouts/boilerplate') %>
 <div id="cluster-map"></div>
 <div class="campgrounds-container">
@@ -6,12 +5,9 @@
 <div class="card mb-3">
     <div class="row border-bottom">
         <div class="col-md-4">
-            <!-- If a campground has any images -->
             <% if (campground.images.length) { %>
-            <!-- show only the first image of that campground -->
             <img src="<%= campground.images[0].url %>" class="d-block w-100 mb-3" alt="..." crossorigin/>
             <% } else {%>
-            <!-- if the campground has no images, show this default image -->
             <img
                 src="<%= 'https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg' %>"
                 class="d-block w-100 mb-3"
@@ -35,7 +31,6 @@
 </div>
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN  %>';
-    // this is a stringified JSON version of "campgrounds". It was put under key "features" because that is what the cluster map expects at clusterMap.js
     const campgrounds = {features: <%- JSON.stringify(campgrounds) %>};
 </script>
 <script src="/javascripts/clusterMap.js"></script>

@@ -1,13 +1,9 @@
-<!-- ejs-mate boilerplate -->
 <% layout('layouts/boilerplate') %>
-<!-- css stylesheet for star reviews -->
 <link rel="stylesheet" href="/stylesheets/stars.css" />
 <div class="row">
     <div class="col-lg-6">
-        <!-- This div is for the carousel for navigating through multiple photos -->
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                <!-- if the campground has no images, show the default image -->
                 <% if (!campground.images.length) { %>
                 <img
                     src="<%='https://res.cloudinary.com/drrm0uwdp/image/upload/v1671035324/YelpCampDefaults/defaultCampgroundImage_yoqhuj.jpg'%>"
@@ -15,14 +11,11 @@
                     alt="..." 
                     crossorigin/>    
                     <% } %> 
-                <!-- If it has images, then iterate over them -->
                 <% campground.images.forEach((img, i) => { %>
-                <!-- if "i" is equal to 0, add the class of 'active', otherwise add nothing -->
                 <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
                     <img src="<%= img.url %>" class="d-block w-100" alt="..." crossorigin/>
                 </div>
                 <% }) %>
-                <!-- if there are more than 1 photos, display these 2 buttons (left/right for navigation) -->
                 <% if(campground.images.length > 1) {%>
                 <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -42,11 +35,9 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-muted fw-bold"><%= campground.location %></li>
-                <!-- show the username of the author -->
                 <li class="list-group-item">Submitted by <span class="text-primary fw-semibold"><%= campground.author.username%></span></li>
                 <li class="list-group-item">$<%= campground.price %>/night</li>
             </ul>
-            <!-- if a user is logged in and campground.author is the same as currentUser.id, then show this div -->
             <% if( currentUser && campground.author.equals(currentUser._id)) {%>
             <div class="card-body">
                 <a class="card-link btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
@@ -55,12 +46,9 @@
                 </form>
             </div>
             <% } %>
-              <!-- if someone is logged in, then show the review creation form. If not, then add a button "leave a review" -->
         <% if(currentUser && !campground.author.equals(currentUser._id)){ %>
-            <!-- Form for creating a review. -->
             <h2>Leave a Review!</h2>
             <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
-                <!-- This 'fieldset' is from 'starabilitycss', for star rating -->
                 <fieldset class="starability-basic">
                     <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
                     <input type="radio" id="first-rate1" name="review[rating]" value="1" />
@@ -82,25 +70,20 @@
                 <button class="btn btn-success">Submit</button>
             </form>
             <% } else if (!currentUser) { %>
-            <!-- when this button is pressed, go to the login screen + add a query string "returnTo" -->
             <a href="/login?returnTo=/campgrounds/<%= campground._id %>" class="btn btn-lg btn-primary">Leave a Review</a>
             <% } %>
         </div>
     </div>
     <div class="col-lg-6">
-        <!-- from mapbox docs, to display the map -->
         <div id='map' class="mb-3"></div>
         <div id="reviewsContainer">
        <% for(let review of campground.reviews) { %>
         <div class="card mb-3">
             <div class="card-body w-100">
                 <h5 class="card-title fs-6 text-primary"><%= review.author.username%></h5>
-                <!-- from starabilitycss 'stars' stylesheet  -->
                 <p class="starability-result" data-rating="<%=review.rating%>">Rated: <%= review.rating %> stars</p>
                 <p class="card-text"><%= review.body %></p>
-                <!-- if a user is logged in and review.author is the same as currentUser.id, then show this div -->
                 <% if( currentUser && review.author.equals(currentUser._id)) {%>
-                <!-- Form for deleting a review. -->
                 <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
                     <button class="btn btn-sm btn-danger">Delete</button>
                 </form>
@@ -111,10 +94,8 @@
         </div>
     </div> 
 </div>
-<!-- "mapToken" and "campground" will be rendered to showPageMap.js in public/javascripts -->
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN  %>';
-    // this is a stringified JSON version of "campgrounds"
     const campground = <%- JSON.stringify(campground) %>;
 </script>
 <script src="/javascripts/showPageMap.js"></script>

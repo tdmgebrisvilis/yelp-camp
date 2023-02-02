@@ -1,11 +1,8 @@
-<!-- this page displays error messages -->
 <% layout('layouts/boilerplate') %> 
 <div class="row">
     <div class="col-6 offset-3">
         <div class="alert alert-danger" role="alert">
-            <!-- show err.message: -->
             <h4 class="alert-heading"><%= err.message %></h4>
-            <!-- if in development mode show err.stack: -->
             <% if (process.env.NODE_ENV !== "production") { %>
                 <p><%= err.stack %></p>
             <% } %>

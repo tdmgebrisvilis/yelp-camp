@@ -9,7 +9,6 @@
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link" href="/campgrounds">Campgrounds</a>
           <a class="nav-link fw-semibold" href="/campgrounds/new">Add New Campground</a>
-          <!-- if "currentUser" is false, show "login" and "register" links. Else, show "logout" link-->
           <div id="login-logout-register" class="navbar-nav">
                   <% if(!currentUser) {%>
                   <a class="nav-link" href="/login?returnTo=/">Login</a>

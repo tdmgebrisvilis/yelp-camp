@@ -1,4 +1,3 @@
-<!-- ejs-mate -->
 <% layout('layouts/boilerplate') %>
 <div class="row">
     <h1 class="text-center">Edit Campground</h1>
@@ -36,26 +35,17 @@
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required><%= campground.description %></textarea>
                 <div class="valid-feedback">Looks good!</div>
             </div>
-            <!-- all file related code here is from bootstrap. The backend code is made possible with the "multer" package -->
             <div class="mb-3">
                 <label for="image" class="form-label"></label>
                 <input class="form-control form-file-input" type="file" id="image" name="image" multiple >
             </div>
-            <!-- this div is for deletion of images when editing a campground -->
             <div class="mb-3 images-for-deletion d-flex flex-wrap">
-                <!-- iterate over all images and make changes that are in the function: -->
                 <% campground.images.forEach(function(img, i) {  %>
                     <div>
-                <!-- show the image thumbnail. Thumbnail is accessible because a virtual for the ImageSchema was created in the campground model. -->
                 <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="" crossorigin>
-                <!-- container div for bootstrap checkbox -->
                 <div class="form-check-inline">
-                    <!-- the actual checkbox, its id is looped (like everything in this fn), so on first repetition it is "image-0", 
-                    on the second its "image-1", etc. Name of this input is "deleteImages[]", which will be reflected in the 
-                    campgrounds Joi validation schema and will be under the same name. Value is the deleted (checked) image's filename. -->
                     <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
                 </div>
-                <!-- looped label, same like the input -->
                 <label for="image-<%=i%>">Delete?</label>
             </div>
                 <% })%>

@@ -1,14 +1,10 @@
-<!-- "ejs-mate" boilerplate -->
 <% layout('layouts/boilerplate') %>
 <div class="row mt-5 pt-5">
     <div id="new-camp" class="col-md-6 offset-md-3">
         <h1 class="text-center mt-2">New Campground</h1>
-        <!-- "validated-form" & "novalidate" are here for for bootstrap validation.  -->
-        <!-- enctype="multipart/form-data" is here for being able to upload files in the form -->
         <form action="/campgrounds" method="POST" class="validated-form" novalidate enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="title">Title:</label>
-                <!-- "required" is for validation from client side (bootstrap):  -->
                 <input class="form-control" type="text" id="title" name="campground[title]" required />
                 <div class="valid-feedback">Looks good!</div>
             </div>
@@ -39,8 +35,6 @@
                 <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
-                 <!-- This is for image upload. Name is important, must be the same as specified in the campgrounds route. 'Multiple' for multiple files uploading. -->
-                <!-- all file related code here is from bootstrap. The backend code is made possible with multer package -->
                 <label for="image" class="form-label">Add images:</label>
                 <input class="form-control form-file-input" type="file" id="image" name="image" multiple >
             </div>
